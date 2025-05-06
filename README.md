@@ -59,7 +59,6 @@ Food wastage is a serious global issue. While tons of food are thrown away daily
 - HTML
 - CSS
 - JavaScript
-- React.js
 
 ### 🛠 Backend
 - Node.js
