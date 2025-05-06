@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register NGO</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Register Your NGO 📝</h1>
+    <form id="register-form">
+      <input type="text" id="name" placeholder="NGO Name" required><br>
+      <input type="text" id="address" placeholder="Address" required><br>
+      <input type="text" id="contact" placeholder="Contact Info" required><br>
+      <input type="number" id="latitude" step="any" placeholder="Latitude" required><br>
+      <input type="number" id="longitude" step="any" placeholder="Longitude" required><br>
+      <button type="submit">Register</button>
+    </form>
+    <p><a href="index.html">Back to Home</a></p>
+  </div>
+
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const ngo = {
+        name: document.getElementById('name').value,
+        address: document.getElementById('address').value,
+        contact: document.getElementById('contact').value,
+        latitude: parseFloat(document.getElementById('latitude').value),
+        longitude: parseFloat(document.getElementById('longitude').value)
+      };
+
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ngo)
+      });
+
+      if (response.ok) {
+        alert('NGO Registered Successfully!');
+        window.location.href = 'index.html';
+      } else {
+        alert('Error registering NGO.');
+      }
+    });
+  </script>
+</body>
+</html>
