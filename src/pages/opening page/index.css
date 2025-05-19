@@ -1,0 +1,900 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+html{
+    scroll-behavior: smooth;
+}
+body {
+    background-color: #f7f7f7;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Styles */
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px 20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #e74c3c;
+    text-decoration: none;
+}
+
+.logo span {
+    color: #27ae60;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-menu a:hover {
+    color: #e74c3c;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.login-btn, .register-btn {
+    padding: 8px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.login-btn {
+    background-color: transparent;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+}
+
+.login-btn:hover {
+    background-color: #fff0f0;
+}
+
+.register-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: 1px solid #e74c3c;
+}
+
+.register-btn:hover {
+    background-color: #c0392b;
+}
+
+.mobile-menu-btn {
+    display: none;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../../assets/monochrome-street-food-entertainment.jpg');
+    background-size: cover;
+    background-position: center;
+
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    max-width: 800px;
+    margin: 0 auto 30px;
+}
+
+.cta-btn {
+    display: inline-block;
+    background-color: #e74c3c;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.cta-btn:hover {
+    background-color: #c0392b;
+}
+/* Additional CSS for JavaScript functionality */
+
+/* Mobile Menu Animation */
+@media (max-width: 768px) {
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: white;
+        flex-direction: column;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        z-index: 99;
+    }
+    
+    .nav-menu.active {
+        max-height: 300px;
+        display: flex;
+    }
+    
+    .nav-menu li {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .nav-menu a {
+        display: block;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+}
+
+/* Register Modal */
+#register-modal {
+    display: none;
+}
+
+/* Mission list animations */
+.mission-list li {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.mission-list li.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered animation delay for mission items */
+.mission-list li:nth-child(1) { transition-delay: 0ms; }
+.mission-list li:nth-child(2) { transition-delay: 150ms; }
+.mission-list li:nth-child(3) { transition-delay: 300ms; }
+.mission-list li:nth-child(4) { transition-delay: 450ms; }
+.mission-list li:nth-child(5) { transition-delay: 600ms; }
+
+/* Team member animations */
+.team-member {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.team-member.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Testimonial slider for mobile */
+@media (max-width: 768px) {
+    .testimonial-slider {
+        display: block;
+        overflow: hidden;
+        position: relative;
+        height: 350px;
+    }
+    
+    .testimonial-slider .testimonial-card {
+        position: absolute;
+        width: 100%;
+        transition: transform 0.5s ease;
+    }
+}
+
+/* Stats counter animation */
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-count {
+    animation: countUp 0.5s forwards;
+}
+
+/* Modal Register CSS */
+.register-form {
+    padding: 25px;
+}
+
+.tab-buttons {
+    display: flex;
+    width: 100%;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    text-align: center;
+    border: none;
+    background: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    color: #e74c3c;
+    border-bottom: 2px solid #e74c3c;
+}
+
+.tab-panel {
+    display: none;
+    padding: 20px 0;
+}
+
+.tab-panel.active {
+    display: block;
+}
+/* Features Section */
+.features {
+    padding: 60px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 32px;
+    color: #333;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.feature-box {
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.feature-box:hover {
+    transform: translateY(-10px);
+}
+
+.feature-icon {
+    font-size: 40px;
+    margin-bottom: 20px;
+    color: #e74c3c;
+}
+
+.feature-box h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+/* Programs Section */
+.programs {
+    background-color: #f0f0f0;
+    padding: 60px 20px;
+}
+
+.programs-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.programs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.program-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.program-image {
+    height: 200px;
+    background-color: #ddd;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../../assets/close-up-hands-holding-food-plates.jpg');
+}
+
+.program-content {
+    padding: 25px;
+}
+
+.program-content h3 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #e74c3c;
+}
+
+.program-content p {
+    margin-bottom: 20px;
+}
+
+.learn-more {
+    display: inline-block;
+    color: #e74c3c;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 5px 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.learn-more:hover {
+    border-color: #e74c3c;
+}
+
+/* Testimonials Section */
+.testimonials {
+    padding: 60px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.testimonial-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-text {
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+}
+
+.author-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin-right: 15px;
+}
+
+.author-info h4 {
+    margin-bottom: 5px;
+}
+
+.author-info p {
+    color: #777;
+    font-size: 14px;
+}
+
+/* Call to Action Section */
+.cta-section {
+    background-color: #e74c3c;
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.cta-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-section h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.cta-section p {
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.cta-white-btn {
+    background-color: white;
+    color: #e74c3c;
+    padding: 12px 30px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.cta-white-btn:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-3px);
+}
+
+.cta-outline-btn {
+    background-color: transparent;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    border: 2px solid white;
+    transition: all 0.3s;
+}
+
+.cta-outline-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+/* Login Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 200;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+    animation: modalFade 0.3s;
+}
+
+@keyframes modalFade {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.modal-header {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/api/placeholder/400/150');
+    background-size: cover;
+    background-position: center;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+}
+
+.modal-header-overlay {
+    text-align: center;
+}
+
+.modal-welcome-text {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    margin-bottom: 10px;
+}
+
+.fruits-decoration {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.fruit {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.login-form {
+    padding: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.input-container {
+    position: relative;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+.icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    cursor: pointer;
+}
+
+.options-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-container input {
+    margin-right: 8px;
+}
+
+.forgot-password {
+    color: #e74c3c;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-donor {
+    background-color: #222;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.btn-donor:hover {
+    background-color: #000;
+}
+
+.btn-receiver {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-receiver:hover {
+    background-color: #c0392b;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.divider span {
+    padding: 0 10px;
+}
+
+.social-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #555;
+}
+
+.social-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.register-prompt {
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+.register-link {
+    color: #e74c3c;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 40px 20px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.footer-column h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+.footer-column ul li {
+    margin-bottom: 10px;
+}
+
+.footer-column a {
+    color: #ddd;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-column a:hover {
+    color: #e74c3c;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.social-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.social-icon:hover {
+    background-color: #e74c3c;
+}
+
+.footer-bottom {
+    max-width: 1200px;
+    margin: 30px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+    text-align: center;
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .features-grid,
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .programs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .features-grid,
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 28px;
+    }
+    
+    .hero p {
+        font-size: 16px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+    }
+    
+    .social-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .auth-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Register Modal */
+#register-modal .modal-content {
+    max-width: 450px;
+}
+
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    text-align: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: #777;
+    transition: all 0.3s;
+}
+
+.tab-btn.active {
+    color: #e74c3c;
+    border-bottom: 2px solid #e74c3c;
+}
+
+.tab-btn:hover:not(.active) {
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.tab-content {
+    padding: 25px;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}

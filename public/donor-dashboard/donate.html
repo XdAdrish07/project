@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Food Donation Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #2e7d32;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .upload-btn {
+      width: 100%;
+      padding: 10px;
+      background: #e0e0e0;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 5px;
+    }
+    .preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      border: 2px dashed #ccc;
+      border-radius: 4px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    .preview-container img {
+      max-width: 120px;
+      max-height: 120px;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+    .preview-container .video-label {
+      font-size: 14px;
+      color: #444;
+      background: #f0f0f0;
+      padding: 8px 10px;
+      border-radius: 4px;
+    }
+    .submit-btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .submit-btn:hover {
+      background-color: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Food Donation Form</h1>
+    <form id="donationForm">
+      <div class="form-group">
+        <label for="foodName">Food Name*</label>
+        <input type="text" id="foodName" name="foodName" required />
+      </div>
+
+      <div class="form-group">
+        <label for="foodType">Food Type*</label>
+        <select id="foodType" name="foodType" required>
+          <option value="">Select</option>
+          <option value="canned">Canned</option>
+          <option value="dry">Dry</option>
+          <option value="fresh">Fresh</option>
+          <option value="prepared">Prepared</option>
+          <option value="bakery">Bakery</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="quantity">Quantity*</label>
+        <input type="number" id="quantity" name="quantity" min="1" required />
+      </div>
+
+      <div class="form-group">
+        <label for="location">Pickup Location*</label>
+        <textarea id="location" name="location" rows="2" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="pickupTime">Pickup Time*</label>
+        <input type="datetime-local" id="pickupTime" name="pickupTime" required />
+      </div>
+
+      <div class="form-group">
+        <label>Upload Images/Videos</label>
+        <div class="preview-container" id="mediaPreview"></div>
+        <input type="file" id="mediaUpload" accept="image/*,video/*" multiple hidden>
+        <div class="upload-btn" onclick="document.getElementById('mediaUpload').click()">Upload Files</div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="3"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit Donation</button>
+    </form>
+  </div>
+
+  <script>
+    const mediaInput = document.getElementById("mediaUpload");
+    const previewContainer = document.getElementById("mediaPreview");
+
+    mediaInput.addEventListener("change", () => {
+      previewContainer.innerHTML = "";
+      const files = Array.from(mediaInput.files);
+
+      files.forEach(file => {
+        const fileType = file.type;
+
+        if (fileType.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            previewContainer.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        } else if (fileType.startsWith("video/")) {
+          const label = document.createElement("div");
+          label.className = "video-label";
+          label.innerText = `Video selected: ${file.name}`;
+          previewContainer.appendChild(label);
+        }
+      });
+    });
+
+    document.getElementById("donationForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      const mediaFiles = document.getElementById("mediaUpload").files;
+      
+      // Add form fields
+      formData.append("foodName", document.getElementById("foodName").value);
+      formData.append("foodType", document.getElementById("foodType").value);
+      formData.append("quantity", document.getElementById("quantity").value);
+      formData.append("location", document.getElementById("location").value);
+      formData.append("pickupTime", document.getElementById("pickupTime").value);
+      formData.append("notes", document.getElementById("notes").value);
+      
+      // Add media files
+      for (let i = 0; i < mediaFiles.length; i++) {
+        formData.append("mediaFiles", mediaFiles[i]);
+      }
+
+      try {
+        const response = await fetch('http://localhost:5003/api/donations', {
+          method: 'POST',
+          body: formData
+        });
+
+        const responseData = await response.json();
+        
+        if (response.ok) {
+          alert("Your donation has been submitted successfully!");
+          document.getElementById("donationForm").reset();
+          document.getElementById("mediaPreview").innerHTML = "";
+        } else {
+          throw new Error(responseData.error || 'Failed to submit donation');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert(`Error submitting donation: ${error.message}`);
+      }
+    });
+  </script>
+</body>
+</html>

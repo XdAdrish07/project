@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeevanAhaar Food Pickup Service</title>
+    <style>
+        :root {
+            --primary: #4caf50;
+            --secondary: #ff5722;
+            --light: #f9f9f9;
+            --dark: #212121;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --gray-light: #f5f5f5;
+            --gray: #e0e0e0;
+            --sidebar-width: 220px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .logo span:first-child {
+            color: #ff5722;
+        }
+        
+        .logo span:last-child {
+            color: #4caf50;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 1rem 0;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .nav-link.active {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .nav-link:hover:not(.active) {
+            background-color: var(--gray-light);
+        }
+        
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 1.5rem;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .stat-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .icon-meals {
+            background-color: var(--secondary);
+        }
+        
+        .icon-upcoming {
+            background-color: var(--primary);
+        }
+        
+        .icon-quality {
+            background-color: #2196f3;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .status-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .status-button {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .status-button.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+        }
+        
+        .status-button:not(.active) {
+            background-color: var(--gray);
+            color: var(--dark);
+        }
+        
+        .status-button:hover:not(.active) {
+            background-color: #d0d0d0;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .filter-select {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: white;
+            font-size: 0.9rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        thead {
+            background-color: var(--gray-light);
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        th {
+            font-weight: 500;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .food-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .food-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .food-info {
+            padding: 1.25rem;
+        }
+        
+        .food-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .food-details {
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .food-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background-color: var(--gray-light);
+            padding: 0.2rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .tag.vegetarian {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: var(--primary);
+        }
+        
+        .tag.vegan {
+            background-color: rgba(76, 175, 80, 0.25);
+            color: #2e7d32;
+        }
+        
+        .tag.gluten-free {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #ff8f00;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 0.75rem;
+        }
+        
+        .status.pending {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #ff8f00;
+        }
+        
+        .status.preparing {
+            background-color: rgba(23, 162, 184, 0.15);
+            color: var(--info);
+        }
+        
+        .status.ready {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: var(--success);
+        }
+        
+        .status.completed {
+            background-color: rgba(33, 37, 41, 0.15);
+            color: var(--dark);
+        }
+        
+        .location-map {
+            margin-top: 0.75rem;
+            width: 100%;
+            height: 150px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .contact-info {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: #555;
+        }
+        
+        .quality {
+            display: flex;
+            gap: 2px;
+        }
+        
+        .star {
+            color: #ffc107;
+        }
+        
+        .quality-bar {
+            height: 8px;
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .quality-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4caf50, #8bc34a);
+            border-radius: 4px;
+        }
+        
+        .user-profile {
+            margin-top: auto;
+            padding: 1rem;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+        
+        .profile-details {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .profile-role {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0.25rem;
+            margin-right: 0.25rem;
+            transition: color 0.3s;
+        }
+        
+        .action-btn:hover {
+            color: var(--dark);
+        }
+        
+        .action-btn.view:hover {
+            color: var(--info);
+        }
+        
+        .action-btn.rate:hover {
+            color: var(--warning);
+        }
+        
+        .action-btn.chat:hover {
+            color: var(--primary);
+        }
+        
+        .status-pill {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-pill.completed {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: var(--success);
+        }
+        
+        .status-pill.scheduled {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #ff8f00;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                width: var(--sidebar-width);
+                background: white;
+                z-index: 100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1.5rem 0.5rem;
+            }
+            .mobile-toggle {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 200;
+                background: white;
+                border-radius: 50%;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                padding: 0.5rem 0.7rem;
+            }
+            .sidebar-header {
+                padding-left: 3.5rem; /* Add space for the hamburger */
+                position: relative;
+            }
+            .mobile-toggle {
+                left: 1rem;
+                /* Optionally, increase z-index if needed */
+                z-index: 300;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span>Jeevan</span><span>Ahaar</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="./dashboard.html" class="nav-link"><i>📊</i> Dashboard</a></li>
+            <li><a href="#" class="nav-link active"><i>🍲</i> Food Pickups</a></li>
+            <li><a href="./notification.html" class="nav-link"><i>🔔</i> Notifications</a></li>
+            <li><a href="./settings.html" class="nav-link"><i>⚙️</i> Settings</a></li>
+        </ul>
+        <div class="user-profile">
+            <div class="profile-avatar">
+                OR
+            </div>
+            <div class="profile-details">
+                <div class="profile-name">Orphanage</div>
+                <div class="profile-role">Food Receiver</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-title">MEALS RECEIVED</div>
+                <div class="stat-value">125</div>
+                <div class="stat-description">This month</div>
+                <div class="stat-icon icon-meals">📦</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">UPCOMING DELIVERIES</div>
+                <div class="stat-value">3</div>
+                <div class="stat-description">Next 7 days</div>
+                <div class="stat-icon icon-upcoming">🚚</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">FOOD QUALITY RATING</div>
+                <div class="stat-value">94%</div>
+                <div class="stat-description">Average quality score</div>
+                <div class="stat-icon icon-quality">⭐</div>
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h2 class="section-title">Food Pickups</h2>
+        </div>
+        
+        <div class="status-bar">
+            <button class="status-button active" data-status="all">All Items</button>
+            <button class="status-button" data-status="pending">Pending</button>
+            <button class="status-button" data-status="preparing">Preparing</button>
+            <button class="status-button" data-status="ready">Ready for Pickup</button>
+            <button class="status-button" data-status="completed">Completed</button>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <span class="filter-label">Category:</span>
+                <select class="filter-select" id="category">
+                    <option value="all">All</option>
+                    <option value="vegetarian">Vegetarian</option>
+                    <option value="vegan">Vegan</option>
+                    <option value="gluten-free">Gluten Free</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <span class="filter-label">Donor:</span>
+                <select class="filter-select" id="donor">
+                    <option value="all">All</option>
+                    <option value="restaurant">Restaurants</option>
+                    <option value="bakery">Bakeries</option>
+                    <option value="supermarket">Supermarkets</option>
+                    <option value="individual">Individuals</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <span class="filter-label">Minimum Quality:</span>
+                <select class="filter-select" id="quality">
+                    <option value="1">★</option>
+                    <option value="2">★★</option>
+                    <option value="3" selected>★★★</option>
+                    <option value="4">★★★★</option>
+                    <option value="5">★★★★★</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Pending Items -->
+        <div class="section-header">
+            <h3 class="section-title">Pending Items</h3>
+            <a href="#" class="view-all">View all</a>
+        </div>
+        
+        <div class="food-grid">
+            <!-- Food Item 1 -->
+            <div class="food-card" data-status="pending" data-category="vegan" data-quality="5" data-donor="restaurant">
+                <img src="/api/placeholder/400/320" alt="Vegan Pasta" class="food-image">
+                <div class="food-info">
+                    <h3 class="food-title">Vegan Pasta Primavera</h3>
+                    <div class="food-tags">
+                        <span class="tag vegan">Vegan</span>
+                    </div>
+                    <div class="food-details">
+                        <p><strong>Donor:</strong> Harmony Bistro</p>
+                        <p><strong>Quality:</strong> 
+                            <span class="quality">
+                                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                            </span>
+                        </p>
+                        <div class="contact-info">
+                            <p><strong>Contact:</strong> Maria Johnson</p>
+                            <p><strong>Phone:</strong> (555) 987-6543</p>
+                        </div>
+                        <span class="status pending">Pending</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food Item 2 -->
+            <div class="food-card" data-status="pending" data-category="vegetarian,gluten-free" data-quality="4" data-donor="bakery">
+                <img src="/api/placeholder/400/320" alt="Gluten-free Muffins" class="food-image">
+                <div class="food-info">
+                    <h3 class="food-title">Gluten-free Blueberry Muffins</h3>
+                    <div class="food-tags">
+                        <span class="tag vegetarian">Vegetarian</span>
+                        <span class="tag gluten-free">Gluten-Free</span>
+                    </div>
+                    <div class="food-details">
+                        <p><strong>Donor:</strong> Sweet Treats Bakery</p>
+                        <p><strong>Quality:</strong> 
+                            <span class="quality">
+                                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span>☆</span>
+                            </span>
+                        </p>
+                        <div class="contact-info">
+                            <p><strong>Contact:</strong> David Wilson</p>
+                            <p><strong>Phone:</strong> (555) 654-3210</p>
+                        </div>
+                        <span class="status pending">Pending</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Preparing Items -->
+        <div class="section-header" style="margin-top: 2rem;">
+            <h3 class="section-title">Preparing Items</h3>
+            <a href="#" class="view-all">View all</a>
+        </div>
+        
+        <div class="food-grid">
+            <!-- Food Item 3 -->
+            <div class="food-card" data-status="preparing" data-category="none" data-quality="3" data-donor="restaurant">
+                <img src="/api/placeholder/400/320" alt="Pizza" class="food-image">
+                <div class="food-info">
+                    <h3 class="food-title">Cheese Pizza (12 slices)</h3>
+                    <div class="food-tags">
+                        <span class="tag vegetarian">Vegetarian</span>
+                    </div>
+                    <div class="food-details">
+                        <p><strong>Donor:</strong> Mario's Pizzeria</p>
+                        <p><strong>Quality:</strong> 
+                            <span class="quality">
+                                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span>☆</span><span>☆</span>
+                            </span>
+                        </p>
+                        <div class="contact-info">
+                            <p><strong>Contact:</strong> Mario Rossi</p>
+                            <p><strong>Phone:</strong> (555) 234-5678</p>
+                        </div>
+                        <span class="status preparing">Preparing</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food Item 4 -->
+            <div class="food-card" data-status="preparing" data-category="none" data-quality="3" data-donor="individual">
+                <img src="/api/placeholder/400/320" alt="Sandwiches" class="food-image">
+                <div class="food-info">
+                    <h3 class="food-title">Assorted Sandwiches</h3>
+                    <div class="food-details">
+                        <p><strong>Donor:</strong> Corporate Event</p>
+                        <p><strong>Quality:</strong> 
+                            <span class="quality">
+                                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span>☆</span><span>☆</span>
+                            </span>
+                        </p>
+                        <div class="contact-info">
+                            <p><strong>Contact:</strong> Michael Thompson</p>
+                            <p><strong>Phone:</strong> (555) 567-8901</p>
+                        </div>
+                        <span class="status preparing">Preparing</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food Item 5 -->
+            <div class="food-card" data-status="preparing" data-category="vegan,gluten-free" data-quality="4" data-donor="supermarket">
+                <img src="/api/placeholder/400/320" alt="Quinoa Salad" class="food-image">
+                <div class="food-info">
+                    <h3 class="food-title">Quinoa Vegetable Salad</h3>
+                    <div class="food-tags">
+                        <span class="tag vegan">Vegan</span>
+                        <span class="tag gluten-free">Gluten-Free</span>
+                    </div>
+                    <div class="food-details">
+                        <p><strong>Donor:</strong> Whole Foods Market</p>
+                        <p><strong>Quality:</strong> 
+                            <span class="quality">
+                                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span>☆</span>
+                            </span>
+                        </p>
+                        <div class="contact-info">
+                            <p><strong>Contact:</strong> Jennifer Adams</p>
+                            <p><strong>Phone:</strong> (555) 432-1098</p>
+                        </div>
+                        <span class="status preparing">Preparing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ready for Pickup -->
+        <div class="section-header" style="margin-top: 2rem;">
+            <h3 class="section-title">Ready for Pickup</h3>
+            <a href="#" class="view-all">View all</a>
+        </div>
+        
+        <div class="food-grid">
+            <!-- Food Item 6 -->
+            <div class="food-card" data-status="ready" data-category="vegetarian,gluten-free" data-quality="4" data-donor="restaurant">
+                <img src="/api/placeholder/400/320" alt="Fresh Salad" class="food-image">
+                <div class="food-info">
+                    <h3 class="food-title">Fresh Garden Salad</h3>
+                    <div class="food-tags">
+                        <span class="tag vegetarian">Vegetarian</span>
+                        <span class="tag gluten-free">Gluten-Free</span>
+                    </div>
+                    <div class="food-details">
+                        <p><strong>Donor:</strong> Green Garden Restaurant</p>
+                        <p><strong>Quality:</strong> 
+                            <span class="quality">
+                                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span>☆</span>
+                            </span>
+                        </p>
+                        <div class="contact-info">
+                            <p><strong>Contact:</strong> John Smith</p>
+                            <p><strong>Phone:</strong> (555) 123-4567</p>
+                        </div>
+                        <span class="status ready">Ready for Pickup</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food Item 7 -->
+            <div class="food-card" data-status="ready" data-category="gluten-free" data-quality="4" data-donor="restaurant">
+                <img src="/api/placeholder/400/320" alt="Rice Bowl" class="food-image">
+                <div class="food-info">
+                    <h3 class="food-title">Teriyaki Chicken Rice Bowls</h3>
+                    <div class="food-tags">
+                        <span class="tag gluten-free">Gluten-Free</span>
+                    </div>
+                    <div class="food-details">
+                        <p><strong>Donor:</strong> Asian Fusion Kitchen</p>
+                        <p><strong>Quality:</strong> 
+                            <span class="quality">
+                                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span>☆</span>
+                            </span>
+                        </p>
+                        <div class="contact-info">
+                            <p><strong>Contact:</strong> Lee Wong</p>
+                            <p><strong>Phone:</strong> (555) 345-6789</p>
+                        </div>
+                        <span class="status ready">Ready for Pickup</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food Item 8 -->
+            <div class="food-card" data-status="ready" data-category="vegetarian,vegan" data-quality="5" data-donor="bakery">
+                <img src="/api/placeholder/400/320" alt="Vegan Pastries" class="food-image">
+                <div class="food-info">
+                    <h3 class="food-title">Vegan Pastry Assortment</h3>
+                    <div class="food-tags">
+                        <span class="tag vegetarian">Vegetarian</span>
+                        <span class="tag vegan">Vegan</span>
+                    </div>
+                    <div class="food-details">
+                        <p><strong>Donor:</strong> Plant-Based Bakery</p>
+                        <p><strong>Quality:</strong> 
+                            <span class="quality">
+                                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                            </span>
+                        </p>
+                        <div class="contact-info">
+                            <p><strong>Contact:</strong> Emma Chen</p>
+                            <p><strong>Phone:</strong> (555) 876-5432</p>
+                        </div>
+                        <span class="status ready">Ready for Pickup</span>
+                    </div>
+                </div
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- End of .content -->
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+<script>
+    // Sidebar mobile toggle
+    document.addEventListener('click', function(e) {
+        const sidebar = document.querySelector('.sidebar');
+        const toggle = document.querySelector('.mobile-toggle');
+        if (
+            window.innerWidth <= 768 &&
+            sidebar.classList.contains('active') &&
+            !sidebar.contains(e.target) &&
+            !toggle.contains(e.target)
+        ) {
+            sidebar.classList.remove('active');
+        }
+    });
+    document.querySelectorAll('.status-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.status-button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const status = this.getAttribute('data-status');
+            document.querySelectorAll('.food-card').forEach(card => {
+                if (status === 'all' || card.getAttribute('data-status') === status) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Filters
+    function applyFilters() {
+        const category = document.getElementById('category').value;
+        const donor = document.getElementById('donor').value;
+        const quality = parseInt(document.getElementById('quality').value, 10);
+
+        document.querySelectorAll('.food-card').forEach(card => {
+            let show = true;
+            // Category filter
+            if (category !== 'all') {
+                const categories = card.getAttribute('data-category').split(',');
+                if (!categories.includes(category)) show = false;
+            }
+            // Donor filter
+            if (donor !== 'all' && card.getAttribute('data-donor') !== donor) show = false;
+            // Quality filter
+            if (parseInt(card.getAttribute('data-quality'), 10) < quality) show = false;
+            card.style.display = show ? '' : 'none';
+        });
+    }
+
+    document.getElementById('category').addEventListener('change', applyFilters);
+    document.getElementById('donor').addEventListener('change', applyFilters);
+    document.getElementById('quality').addEventListener('change', applyFilters);
+</script>
+</body>
+</html>

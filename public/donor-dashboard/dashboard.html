@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../src/pages/donor-dashboard/main.css">
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --primary-dark: #388E3C;
+      --primary-light: #C8E6C9;
+      --accent-color: #FF5722;
+      --text-color: #333;
+      --light-text: #666;
+      --lightest-grey: #f9f9f9;
+      --light-grey: #eee;
+      --medium-grey: #ddd;
+      --dark-grey: #aaa;
+      --white: #fff;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-color);
+      background-color: var(--lightest-grey);
+      line-height: 1.6;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 0 1.5rem 1.5rem;
+      border-bottom: 1px solid var(--light-grey);
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #e74c3c;
+        text-decoration: none;
+    }
+    
+    .logo span {
+        color: #27ae60;
+    }
+
+    .nav-menu {
+      list-style: none;
+      margin-top: 2rem;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--light-text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      gap: 0.75rem;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    .nav-link i {
+      width: 20px;
+      text-align: center;
+    }
+
+    .user-profile {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--light-grey);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-dark);
+      font-weight: bold;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .user-role {
+      font-size: 0.75rem;
+      color: var(--light-text);
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      flex-grow: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .greeting {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .date {
+      color: var(--light-text);
+      font-size: 0.9rem;
+    }
+
+    .button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Stats Cards */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-title {
+      color: var(--light-text);
+      font-size: 0.9rem;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .stat-icon.green {
+      background-color: var(--primary-color);
+    }
+
+    .stat-icon.orange {
+      background-color: var(--accent-color);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-description {
+      font-size: 0.8rem;
+      color: var(--light-text);
+    }
+
+    /* Donations Table */
+    .donations-section {
+      background-color: var(--white);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .view-all {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .donations-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .donations-table th {
+      text-align: left;
+      padding: 1rem;
+      border-bottom: 2px solid var(--light-grey);
+      color: var(--light-text);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .donations-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--light-grey);
+      color: var(--text-color);
+    }
+
+    .donations-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .donations-table tr:hover {
+      background-color: var(--lightest-grey);
+    }
+
+    .status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status.completed {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    .status.pending {
+      background-color: #FFF3E0;
+      color: #E65100;
+    }
+
+    .status.processing {
+      background-color: #E3F2FD;
+      color: #0D47A1;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--medium-grey);
+      background: var(--white);
+      color: var(--light-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+      background-color: var(--primary-color);
+      color: var(--white);
+      border-color: var(--primary-color);
+    }
+
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+      display: none;
+      font-size: 1.25rem;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .loading-spinner i {
+      font-size: 2rem;
+      color: var(--primary-color);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Error Message */
+    .error-message {
+      display: none;
+      background-color: #FFEBEE;
+      color: #B71C1C;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    
+    /* Contact Us Button Styles */
+    .contact-btn {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--light-text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      gap: 0.75rem;
+    }
+    
+    .contact-btn:hover {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+    }
+    
+    .contact-btn i {
+      width: 20px;
+      text-align: center;
+    }
+    
+    /* Contact Info Panel */
+    .contact-panel {
+      position: fixed;
+      bottom: -150px;
+      left: 0;
+      right: 0;
+      background-color: var(--white);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+    
+    .contact-panel.show {
+      bottom: 0;
+    }
+    
+    .contact-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .contact-panel-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--light-text);
+    }
+    
+    .contact-info {
+      display: flex;
+      gap: 2rem;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+    }
+    
+    .contact-item i {
+      margin-right: 0.75rem;
+      font-size: 1.25rem;
+      color: var(--primary-color);
+    }
+    
+    .contact-item-content a {
+      color: var(--text-color);
+      text-decoration: none;
+    }
+    
+    .contact-item-content a:hover {
+      color: var(--primary-color);
+    }
+    
+    .contact-item-label {
+      font-size: 0.75rem;
+      color: var(--light-text);
+      margin-bottom: 0.25rem;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        z-index: 100;
+        height: 100vh;
+      }
+
+      .sidebar.active {
+        left: 0;
+      }
+
+      .main-content {
+        padding-top: 70px;
+      }
+
+      .mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 90;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .mobile-logo {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+      
+      .contact-info {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .header .button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .donations-table th:nth-child(3),
+      .donations-table td:nth-child(3) {
+        display: none;
+      }
+    }
+
+    /* Add these new styles for the food quality modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      position: relative;
+      background: white;
+      width: 90%;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .upload-section {
+      text-align: center;
+      padding: 20px;
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      margin: 20px 0;
+      transition: all 0.3s ease;
+    }
+
+    .upload-section:hover {
+      border-color: #4CAF50;
+      background: #f8f9fa;
+    }
+
+    .upload-icon {
+      font-size: 40px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    #previewImage {
+      max-width: 100%;
+      max-height: 300px;
+      margin: 15px auto;
+      display: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .quality-result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .metric-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .metric-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #e9ecef;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      transition: width 0.6s ease, background-color 0.6s ease;
+    }
+
+    .explanation {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 0.9em;
+      line-height: 1.5;
+    }
+
+    #analyzeBtn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-top: 20px;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #analyzeBtn:hover {
+      background: #388E3C;
+      transform: translateY(-2px);
+    }
+
+    #analyzeBtn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-utensils"></i>
+          <a href="#" class="logo">Jeevan<span>Ahaar</span></a>
+        </div>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="#" class="nav-link active">
+            <i class="fas fa-th-large"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="./donation.html" class="nav-link">
+            <i class="fas fa-hand-holding-heart"></i>
+            <span>My Donations</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="./notification.html" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+            <span class="notification-badge"></span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="./settings.html" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+        <!-- New Contact Us Button -->
+        <li class="nav-item">
+          <div class="contact-btn" id="contactBtn">
+            <i class="fas fa-headset"></i>
+            <span>Contact Us</span>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="user-profile">
+        <div class="user-avatar" id="userInitials">--</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">--</div>
+          <div class="user-role" id="userRole">--</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="top-bar">
+        <div>
+          <h1 class="page-title">Welcome to your Dashboard!</h1>
+          <div class="date" id="currentDate">Friday, April 25, 2025</div>
+        </div>
+        <button class="action-button" id="findNgoBtn" onclick="window.location.href='../../src/ngo-finder/public/index.html'">
+          <i class="fas fa-search"></i> Find NGO
+        </button>
+      </div>
+
+      <div class="header">
+        <div>
+          <h1 class="greeting" id="welcomeMessage">Welcome to your Dashboard!</h1>
+          <p class="date" id="currentDate">--</p>
+        </div>
+        <button class="button" id="newDonationBtn">
+            <i class="fas fa-plus"></i>
+            <span>Create New Donation</span>
+          </button>          
+      </div>
+
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">TOTAL DONATIONS</div>
+            <div class="stat-icon green">
+              <i class="fas fa-hand-holding-heart"></i>
+            </div>
+          </div>
+          <div class="stat-value" id="totalDonations">-</div>
+          <div class="stat-description" id="donationsChange">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">MEALS PROVIDED</div>
+            <div class="stat-icon orange">
+              <i class="fas fa-utensils"></i>
+            </div>
+          </div>
+          <div class="stat-value" id="mealsProvided">-</div>
+          <div class="stat-description" id="mealsChange">-</div>
+        </div>
+      </div>
+
+      <div class="donations-section">
+        <div class="section-header">
+          <h2 class="section-title">Recent Donations</h2>
+          <a href="#" class="view-all">View all <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="table-container">
+          <table class="donations-table">
+            <thead>
+              <tr>
+                <th>Food Name</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Location</th>
+                <th>Pickup Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="donationsTableBody">
+              <!-- Data will be loaded from MongoDB -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="dashboard-actions">
+        <a href="/donor-dashboard/food-quality-check.html" class="btn btn-primary">Check Food Quality</a>
+        <a href="/donor-dashboard/food-quality-history.html" class="btn btn-secondary">View Quality History</a>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Contact Info Panel -->
+  <div class="contact-panel" id="contactPanel">
+    <div class="contact-panel-header">
+      <div class="contact-panel-title">Contact Information</div>
+      <button class="close-btn" id="closeContactPanel">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="contact-info">
+      <div class="contact-item">
+        <i class="fas fa-phone"></i>
+        <div class="contact-item-content">
+          <div class="contact-item-label">Phone</div>
+          <a href="tel:+91-9876543210">+91-9876543210</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <div class="contact-item-content">
+          <div class="contact-item-label">Email</div>
+          <a href="mailto:support@jeevanahaar.org">support@jeevanahaar.org</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add this modal at the end of the body -->
+  <div id="qualityModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeQualityModal()">&times;</span>
+      <h2>Food Quality Analysis</h2>
+      <div class="upload-section" onclick="document.getElementById('foodImage').click()">
+        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+        <p>Click or drag food image here</p>
+        <input type="file" id="foodImage" accept="image/*" style="display: none;">
+      </div>
+      <img id="previewImage" alt="Food preview">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner"></i>
+        <p>Analyzing food quality...</p>
+      </div>
+      <div id="qualityResult" class="quality-result">
+        <h3 id="qualityStatus"></h3>
+        <div class="quality-metrics">
+          <div class="metric-item">
+            <div class="metric-label">
+              <span>Freshness</span>
+              <span class="metric-value" id="freshnessValue">-</span>
+            </div>
+            <div class="progress-bar">
+              <div id="freshnessBar" class="progress-fill"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-label">
+              <span>Safety</span>
+              <span class="metric-value" id="safetyValue">-</span>
+            </div>
+            <div class="progress-bar">
+              <div id="safetyBar" class="progress-fill"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-label">
+              <span>Overall Quality</span>
+              <span class="metric-value" id="qualityValue">-</span>
+            </div>
+            <div class="progress-bar">
+              <div id="qualityBar" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+        <div id="explanation" class="explanation"></div>
+      </div>
+      <button id="analyzeBtn" onclick="analyzeFoodQuality()" disabled>
+        Analyze Food Quality
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript for the dashboard functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const sidebar = document.getElementById('sidebar');
+      const newDonationBtn = document.getElementById('newDonationBtn');
+      const contactBtn = document.getElementById('contactBtn');
+      const contactPanel = document.getElementById('contactPanel');
+      const closeContactPanel = document.getElementById('closeContactPanel');
+      
+      // Display current date
+      const today = new Date();
+      const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+      document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+      
+      // Update new donation button click handler
+      newDonationBtn.addEventListener('click', function() {
+        window.location.href = './donate.html';
+      });
+      
+      // Toggle sidebar on mobile
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', function() {
+          sidebar.classList.toggle('active');
+          
+          // Change icon based on sidebar state
+          const icon = mobileMenuBtn.querySelector('i');
+          if (sidebar.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+          } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+          }
+        });
+      }
+      
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        const isClickInsideSidebar = sidebar.contains(event.target);
+        const isClickOnMenuBtn = mobileMenuBtn ? mobileMenuBtn.contains(event.target) : false;
+        
+        if (!isClickInsideSidebar && !isClickOnMenuBtn && sidebar.classList.contains('active')) {
+          sidebar.classList.remove('active');
+          if (mobileMenuBtn) {
+            const icon = mobileMenuBtn.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+          }
+        }
+      });
+      
+      // New donation button animation
+      newDonationBtn.addEventListener('click', function() {
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 150);
+      });
+      
+      // Add hover animations to stat cards
+      const statCards = document.querySelectorAll('.stat-card');
+      statCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-5px)';
+          this.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.1)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = '';
+          this.style.boxShadow = '';
+        });
+      });
+      
+      // Action buttons hover effect - Will be applied to dynamically loaded buttons
+      document.addEventListener('mouseover', function(event) {
+        if (event.target.classList.contains('action-btn')) {
+          event.target.style.backgroundColor = '#4CAF50';
+          event.target.style.color = 'white';
+          event.target.style.borderColor = '#4CAF50';
+        }
+      });
+      
+      document.addEventListener('mouseout', function(event) {
+        if (event.target.classList.contains('action-btn')) {
+          event.target.style.backgroundColor = '';
+          event.target.style.color = '';
+          event.target.style.borderColor = '';
+        }
+      });
+      
+      // Contact Us functionality
+      contactBtn.addEventListener('click', function() {
+        contactPanel.classList.add('show');
+      });
+      
+      closeContactPanel.addEventListener('click', function() {
+        contactPanel.classList.remove('show');
+      });
+      
+      // Close contact panel when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!contactPanel.contains(event.target) && !contactBtn.contains(event.target) && contactPanel.classList.contains('show')) {
+          contactPanel.classList.remove('show');
+        }
+      });
+      
+      // Fetch and display donations
+      async function fetchDonations() {
+        try {
+          const response = await fetch('http://localhost:5003/api/donations');
+          if (!response.ok) {
+            throw new Error('Failed to fetch donations');
+          }
+          const donations = await response.json();
+          console.log('Fetched donations:', donations); // Debug log
+          displayDonations(donations);
+          updateStats(donations);
+        } catch (error) {
+          console.error('Error fetching donations:', error);
+          alert('Failed to load donations. Please try again later.');
+        }
+      }
+
+      function displayDonations(donations) {
+        const tableBody = document.getElementById('donationsTableBody');
+        tableBody.innerHTML = '';
+
+        if (donations.length === 0) {
+          const emptyRow = document.createElement('tr');
+          emptyRow.innerHTML = `
+            <td colspan="7" style="text-align: center; padding: 2rem;">
+              <i class="fas fa-inbox" style="font-size: 2rem; color: var(--light-text); margin-bottom: 1rem;"></i>
+              <p>No donations found. Click "Create New Donation" to get started!</p>
+            </td>
+          `;
+          tableBody.appendChild(emptyRow);
+          return;
+        }
+
+        donations.forEach(donation => {
+          const row = document.createElement('tr');
+          row.innerHTML = createDonationRow(donation);
+          tableBody.appendChild(row);
+        });
+      }
+
+      function createDonationRow(donation) {
+        return `
+          <td>${donation.foodName || 'N/A'}</td>
+          <td>${donation.foodType || 'N/A'}</td>
+          <td>${donation.quantity || '0'}</td>
+          <td>${donation.location || 'N/A'}</td>
+          <td>${donation.pickupTime ? new Date(donation.pickupTime).toLocaleString() : 'N/A'}</td>
+          <td>
+            <span class="status ${donation.status || 'pending'}">
+              ${donation.status || 'pending'}
+            </span>
+          </td>
+          <td>
+            <div class="actions">
+              <button class="action-btn" onclick="checkFoodQuality('${donation._id}')" title="Check Food Quality">
+                <i class="fas fa-check-circle"></i>
+              </button>
+              <button class="action-btn" onclick="viewDonation('${donation._id}')" title="View Details">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="action-btn" onclick="editDonation('${donation._id}')" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn" onclick="deleteDonation('${donation._id}')" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+      }
+
+      function updateStats(donations) {
+        const totalDonations = donations.length;
+        const pendingDonations = donations.filter(d => d.status === 'pending').length;
+        const completedDonations = donations.filter(d => d.status === 'completed').length;
+        
+        document.getElementById('totalDonations').textContent = totalDonations;
+        document.getElementById('donationsChange').textContent = `${pendingDonations} pending, ${completedDonations} completed`;
+        
+        // Calculate total meals provided (assuming each donation provides meals for quantity people)
+        const totalMeals = donations.reduce((sum, donation) => sum + (parseInt(donation.quantity) || 0), 0);
+        document.getElementById('mealsProvided').textContent = totalMeals;
+        document.getElementById('mealsChange').textContent = 'All time';
+      }
+
+      // Add donation management functions
+      async function viewDonation(id) {
+        try {
+          const response = await fetch(`http://localhost:5003/api/donations/${id}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch donation details');
+          }
+          const donation = await response.json();
+          // Show donation details in a modal or alert
+          alert(`
+            Donation Details:
+            Food Name: ${donation.foodName}
+            Type: ${donation.foodType}
+            Quantity: ${donation.quantity}
+            Location: ${donation.location}
+            Pickup Time: ${new Date(donation.pickupTime).toLocaleString()}
+            Status: ${donation.status}
+            Notes: ${donation.notes || 'None'}
+          `);
+        } catch (error) {
+          console.error('Error viewing donation:', error);
+          alert('Failed to view donation details. Please try again later.');
+        }
+      }
+
+      async function editDonation(id) {
+        // Redirect to edit page or show edit modal
+        window.location.href = `./donate.html?id=${id}`;
+      }
+
+      async function deleteDonation(id) {
+        if (confirm('Are you sure you want to delete this donation?')) {
+          try {
+            const response = await fetch(`http://localhost:5003/api/donations/${id}`, {
+              method: 'DELETE'
+            });
+            if (!response.ok) {
+              throw new Error('Failed to delete donation');
+            }
+            // Refresh the donations list
+            fetchDonations();
+            alert('Donation deleted successfully!');
+          } catch (error) {
+            console.error('Error deleting donation:', error);
+            alert('Failed to delete donation. Please try again later.');
+          }
+        }
+      }
+
+      // Initialize the dashboard
+      fetchDonations();
+    });
+
+    let currentDonationId = null;
+
+    function checkFoodQuality(donationId) {
+      currentDonationId = donationId;
+      document.getElementById('qualityModal').style.display = 'block';
+      resetQualityCheck();
+    }
+
+    function closeQualityModal() {
+      document.getElementById('qualityModal').style.display = 'none';
+      resetQualityCheck();
+    }
+
+    function resetQualityCheck() {
+      document.getElementById('foodImage').value = '';
+      document.getElementById('previewImage').style.display = 'none';
+      document.getElementById('qualityResult').style.display = 'none';
+      document.getElementById('analyzeBtn').disabled = true;
+      document.getElementById('loading-spinner').style.display = 'none';
+    }
+
+    document.getElementById('foodImage').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('previewImage');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          document.getElementById('analyzeBtn').disabled = false;
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    async function analyzeFoodQuality() {
+      const fileInput = document.getElementById('foodImage');
+      if (!fileInput.files[0]) {
+        alert('Please select an image first');
+        return;
+      }
+
+      try {
+        // Show loading spinner
+        document.getElementById('loading-spinner').style.display = 'block';
+        document.getElementById('analyzeBtn').disabled = true;
+
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        formData.append('donationId', currentDonationId);
+
+        const response = await fetch('/api/food-quality-check', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to analyze food quality');
+        }
+
+        const result = await response.json();
+        const analysis = result.analysis;
+
+        // Update UI with results
+        document.getElementById('freshnessValue').textContent = `${analysis.freshness}%`;
+        document.getElementById('freshnessBar').style.width = `${analysis.freshness}%`;
+        document.getElementById('freshnessBar').className = `progress-fill ${analysis.freshness > 70 ? 'good-progress' : 'bad-progress'}`;
+
+        document.getElementById('safetyValue').textContent = `${analysis.safety}%`;
+        document.getElementById('safetyBar').style.width = `${analysis.safety}%`;
+        document.getElementById('safetyBar').className = `progress-fill ${analysis.safety > 70 ? 'good-progress' : 'bad-progress'}`;
+
+        document.getElementById('qualityValue').textContent = `${analysis.quality}%`;
+        document.getElementById('qualityBar').style.width = `${analysis.quality}%`;
+        document.getElementById('qualityBar').className = `progress-fill ${analysis.quality > 70 ? 'good-progress' : 'bad-progress'}`;
+
+        // Update status and explanation
+        const qualityResult = document.getElementById('qualityResult');
+        const qualityStatus = document.getElementById('qualityStatus');
+        
+        qualityResult.style.display = 'block';
+        if (analysis.quality > 70) {
+          qualityResult.className = 'quality-result quality-good';
+          qualityStatus.textContent = '✓ Food Quality is Good';
+        } else {
+          qualityResult.className = 'quality-result quality-bad';
+          qualityStatus.textContent = '⚠ Food Quality Needs Attention';
+        }
+
+        document.getElementById('explanation').textContent = analysis.explanation;
+
+      } catch (error) {
+        console.error('Error analyzing food quality:', error);
+        alert('Error analyzing food quality. Please try again.');
+      } finally {
+        // Hide loading spinner
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('analyzeBtn').disabled = false;
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('qualityModal');
+      if (event.target == modal) {
+        closeQualityModal();
+      }
+    }
+
+    // Function to handle food quality check
+    async function checkFoodQuality() {
+        const imageInput = document.getElementById('qualityImageInput');
+        const imageFile = imageInput.files[0];
+        
+        if (!imageFile) {
+            alert('Please select an image first');
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        
+        try {
+            const response = await fetch('/api/food-quality-check', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to analyze food quality');
+            }
+            
+            if (!data.success) {
+                throw new Error('Analysis failed');
+            }
+            
+            // Display the results
+            displayQualityResult(data.analysis);
+            
+            // Reset the form
+            imageInput.value = '';
+            document.getElementById('qualityCheckModal').style.display = 'none';
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message || 'Error analyzing food quality. Please try again.');
+        }
+    }
+
+    // Function to display quality result
+    function displayQualityResult(result) {
+        const section = document.getElementById('qualityResultSection');
+        const status = document.getElementById('qualityStatus');
+        const qualityValue = document.getElementById('qualityValue');
+        const freshnessValue = document.getElementById('freshnessValue');
+        const safetyValue = document.getElementById('safetyValue');
+        const temperatureValue = document.getElementById('temperatureValue');
+        const qualityImage = document.getElementById('qualityImage');
+        const qualityTimestamp = document.getElementById('qualityTimestamp');
+        
+        // Update values
+        qualityValue.textContent = `${result.quality}%`;
+        freshnessValue.textContent = `${result.freshness}%`;
+        safetyValue.textContent = `${result.safety}%`;
+        temperatureValue.textContent = `${result.temperature}%`;
+        
+        // Set status
+        if (result.quality > 70) {
+            status.textContent = 'Good Quality';
+            status.className = 'quality-status status-good';
+        } else {
+            status.textContent = 'Poor Quality';
+            status.className = 'quality-status status-poor';
+        }
+        
+        // Set image
+        qualityImage.src = result.imageUrl;
+        
+        // Set timestamp
+        qualityTimestamp.textContent = `Checked on: ${new Date().toLocaleString()}`;
+        
+        // Show section
+        section.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

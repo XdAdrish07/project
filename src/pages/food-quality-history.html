@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Quality History - Jeevan Ahaar</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+    <style>
+        .quality-history-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .quality-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 2rem;
+        }
+        .quality-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .quality-details {
+            flex: 1;
+        }
+        .quality-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .quality-good {
+            color: #28a745;
+        }
+        .quality-bad {
+            color: #dc3545;
+        }
+        .quality-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .metric-item {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        .metric-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .metric-value {
+            font-weight: bold;
+            margin-top: 0.25rem;
+        }
+        .confidence-score {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        .timestamp {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="quality-history-container">
+        <h1>Food Quality History</h1>
+        <div id="qualityHistory"></div>
+    </div>
+
+    <script src="../../assets/script.js"></script>
+    <script>
+        async function loadQualityHistory() {
+            try {
+                const donationId = new URLSearchParams(window.location.search).get('donationId');
+                if (!donationId) {
+                    document.getElementById('qualityHistory').innerHTML = `
+                        <div class="no-results">
+                            <p>Please select a donation to view its quality history</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const response = await fetch(`/api/food-quality/${donationId}`);
+                const qualityChecks = await response.json();
+
+                if (qualityChecks.length === 0) {
+                    document.getElementById('qualityHistory').innerHTML = `
+                        <div class="no-results">
+                            <p>No quality checks found for this donation</p>
+                            <a href="/food-quality-check.html?donationId=${donationId}" class="btn btn-primary">
+                                Perform Quality Check
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const historyHTML = qualityChecks.map(check => `
+                    <div class="quality-card">
+                        <img src="${check.imagePath}" alt="Food quality check" class="quality-image">
+                        <div class="quality-details">
+                            <div class="quality-status ${check.quality === 'good' ? 'quality-good' : 'quality-bad'}">
+                                ${check.quality === 'good' ? 'Good Quality' : 'Poor Quality'}
+                            </div>
+                            <div class="confidence-score">
+                                Confidence: ${(check.confidence * 100).toFixed(1)}%
+                            </div>
+                            <div class="quality-metrics">
+                                <div class="metric-item">
+                                    <div class="metric-label">Freshness</div>
+                                    <div class="metric-value">${(check.details.freshness * 100).toFixed(0)}%</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Contamination</div>
+                                    <div class="metric-value">${(check.details.contamination * 100).toFixed(0)}%</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Temperature</div>
+                                    <div class="metric-value">${(check.details.temperature * 100).toFixed(0)}%</div>
+                                </div>
+                            </div>
+                            <div class="timestamp">
+                                Checked on: ${new Date(check.timestamp).toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('qualityHistory').innerHTML = historyHTML;
+            } catch (error) {
+                console.error('Error loading quality history:', error);
+                document.getElementById('qualityHistory').innerHTML = `
+                    <div class="no-results">
+                        <p>Error loading quality history. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load quality history when page loads
+        document.addEventListener('DOMContentLoaded', loadQualityHistory);
+    </script>
+</body>
+</html> 

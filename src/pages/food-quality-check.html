@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Quality Check - Jeevan Ahaar</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+    <style>
+        .quality-check-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .image-upload-section {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 1rem 0;
+            display: none;
+            border-radius: 4px;
+        }
+        .quality-results {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none;
+        }
+        .quality-good {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .quality-bad {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .quality-details {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+        .quality-metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin-top: 0.25rem;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .confidence-score {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="quality-check-container">
+        <h1>Food Quality Check</h1>
+        <div class="image-upload-section">
+            <input type="file" id="foodImage" accept="image/*" capture="environment">
+            <img id="preview" class="preview-image" alt="Food preview">
+        </div>
+        <button id="analyzeBtn" class="btn btn-primary">Analyze Food Quality</button>
+        <div id="qualityResults" class="quality-results">
+            <h3 id="qualityStatus"></h3>
+            <div class="confidence-score">Confidence: <span id="confidenceScore"></span></div>
+            <div class="quality-details">
+                <div class="quality-metric">
+                    <span>Freshness</span>
+                    <div class="progress-bar">
+                        <div id="freshnessBar" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="quality-metric">
+                    <span>Contamination</span>
+                    <div class="progress-bar">
+                        <div id="contaminationBar" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="quality-metric">
+                    <span>Temperature</span>
+                    <div class="progress-bar">
+                        <div id="temperatureBar" class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/script.js"></script>
+    <script>
+        const foodImage = document.getElementById('foodImage');
+        const preview = document.getElementById('preview');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const qualityResults = document.getElementById('qualityResults');
+        const qualityStatus = document.getElementById('qualityStatus');
+        const confidenceScore = document.getElementById('confidenceScore');
+        const freshnessBar = document.getElementById('freshnessBar');
+        const contaminationBar = document.getElementById('contaminationBar');
+        const temperatureBar = document.getElementById('temperatureBar');
+
+        foodImage.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        analyzeBtn.addEventListener('click', async function() {
+            if (!foodImage.files[0]) {
+                alert('Please upload an image first');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', foodImage.files[0]);
+            formData.append('donationId', window.location.search.split('=')[1] || '');
+
+            try {
+                const response = await fetch('/api/food-quality-check', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                qualityResults.style.display = 'block';
+                if (result.quality === 'good') {
+                    qualityResults.className = 'quality-results quality-good';
+                    qualityStatus.textContent = 'Food Quality: Good - Safe to consume';
+                } else {
+                    qualityResults.className = 'quality-results quality-bad';
+                    qualityStatus.textContent = 'Food Quality: Poor - Not recommended for consumption';
+                }
+
+                // Update confidence score
+                confidenceScore.textContent = `${(result.confidence * 100).toFixed(1)}%`;
+
+                // Update quality metrics
+                freshnessBar.style.width = `${result.details.freshness * 100}%`;
+                contaminationBar.style.width = `${result.details.contamination * 100}%`;
+                temperatureBar.style.width = `${result.details.temperature * 100}%`;
+
+                // Set colors for progress bars
+                freshnessBar.style.backgroundColor = result.details.freshness > 0.7 ? '#28a745' : '#dc3545';
+                contaminationBar.style.backgroundColor = result.details.contamination < 0.3 ? '#28a745' : '#dc3545';
+                temperatureBar.style.backgroundColor = result.details.temperature > 0.5 ? '#28a745' : '#dc3545';
+
+            } catch (error) {
+                console.error('Error analyzing food quality:', error);
+                alert('Error analyzing food quality. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications — JeevanAhaar</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-light: #C8E6C9;
+            --secondary-color: #FF5722;
+            --background-color: #f5f5f5;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --api-color: #2196F3;
+            --api-light-color: #E3F2FD;
+            --notification-read: #f9f9f9;
+            --notification-unread: #edf7ed;
+            --light-text: #666;
+            --lightest-grey: #f9f9f9;
+            --light-grey: #eee;
+            --medium-grey: #ddd;
+            --dark-grey: #aaa;
+            --white: #fff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            display: flex;
+        }
+        
+        /* Updated Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--light-grey);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span:first-child {
+            color: #e74c3c;
+        }
+
+        .logo span:last-child {
+            color: #27ae60;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 2rem;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--light-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .notification-badge {
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            position: absolute;
+            right: 20px;
+        }
+
+        .user-profile {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--light-grey);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--light-text);
+        }
+        
+        /* Original Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            color: var(--text-color);
+        }
+        
+        .date {
+            color: #757575;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .notification-filters {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .filter-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #757575;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .filter-button.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .notification-list {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .notification-item.unread {
+            background-color: var(--notification-unread);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .icon-donation {
+            background-color: #edf7ed;
+            color: var(--primary-color);
+        }
+        
+        .icon-request {
+            background-color: #fff8e1;
+            color: #ffa000;
+        }
+        
+        .icon-system {
+            background-color: var(--api-light-color);
+            color: var(--api-color);
+        }
+        
+        .icon-alert {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .notification-time {
+            color: #757575;
+            font-size: 12px;
+        }
+        
+        .notification-message {
+            color: #555;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .notification-action {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .action-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .action-secondary {
+            background-color: transparent;
+            color: #757575;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .action-icon {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        
+        .unread-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #757575;
+        }
+        
+        .empty-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+        
+        .empty-message {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .load-more {
+            display: block;
+            text-align: center;
+            padding: 15px;
+            background-color: #f9f9f9;
+            color: #757575;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .load-more:hover {
+            background-color: #f0f0f0;
+        }
+        
+        /* Mark All as Read Button */
+        .mark-all-read {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #757575;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .mark-all-read i {
+            margin-right: 5px;
+        }
+        
+        /* Contact Panel Styles */
+        .contact-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 99;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-btn:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Sidebar contact button styling */
+        .sidebar-contact {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--light-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 0.75rem;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .sidebar-contact:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        
+        .contact-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 360px;
+            height: 100vh;
+            background-color: var(--white);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .contact-panel.show {
+            right: 0;
+        }
+        
+        .contact-panel-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .contact-panel-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-contact-panel {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .contact-panel-content {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .contact-section {
+            margin-bottom: 25px;
+        }
+        
+        .contact-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .contact-method {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: var(--lightest-grey);
+            transition: all 0.2s ease;
+        }
+        
+        .contact-method:hover {
+            background-color: var(--light-grey);
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .contact-details {
+            flex: 1;
+        }
+        
+        .contact-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 2px;
+        }
+        
+        .contact-value {
+            color: var(--light-text);
+            font-size: 14px;
+        }
+        
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--medium-grey);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #323232;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding-bottom: 10px;
+            }
+            
+            .user-profile {
+                position: static;
+                width: 100%;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .contact-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <span>Jeevan</span><span>Ahaar</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="./dashboard.html" class="nav-link">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="./donation.html" class="nav-link">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <span>My Donations</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                    <span class="notification-badge">6</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="./settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <div class="sidebar-contact" id="sidebarContactBtn">
+                  <i class="fas fa-headset"></i>
+                  <span>Contact Us</span>
+                </div>
+            </li>
+        </ul>
+        
+        <div class="user-profile">
+            <div class="user-avatar">SR</div>
+            <div class="user-info">
+                <div class="user-name">Sarah Reynolds</div>
+                <div class="user-role">Premium Donor</div>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="main-content">
+        <div class="top-bar">
+            <div>
+                <h1 class="page-title">Notifications</h1>
+                <div class="date" id="currentDate">Saturday, April 26, 2025</div>
+            </div>
+            <button class="mark-all-read">
+                <i>✓</i> Mark all as read
+            </button>
+        </div>
+        
+        <div class="notification-filters">
+            <button class="filter-button active">All</button>
+            <button class="filter-button">Requests</button>
+            <button class="filter-button">Pickup</button>
+            <button class="filter-button">System</button>
+        </div>
+        
+        <div class="notification-list">
+            <!-- Notification items remain the same -->
+            <!-- Donation claimed notification -->
+            <div class="notification-item unread">
+                <span class="unread-indicator"></span>
+                <div class="notification-icon icon-donation">🍲</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Donation Claimed</div>
+                        <div class="notification-time">15 minutes ago</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>Hope Orphanage</strong> has claimed your donation of Main Course meals for 50 people (ID: DN-2025-0426). Scheduled for pickup on April 26, 2025.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">👁️</span> View Details
+                        </button>
+                        <button class="notification-action action-secondary">
+                            <span class="action-icon">💬</span> Send Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New food request notification -->
+            <div class="notification-item unread">
+                <span class="unread-indicator"></span>
+                <div class="notification-icon icon-request">📋</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">New Food Request</div>
+                        <div class="notification-time">45 minutes ago</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>Children's Shelter</strong> is requesting 30 servings of Vegetarian Lunch meals for April 27, 2025. Based on your donation history, this might be a good match.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">✓</span> Fulfill Request
+                        </button>
+                        <button class="notification-action action-secondary">
+                            <span class="action-icon">✕</span> Dismiss
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pickup scheduled notification -->
+            <div class="notification-item unread">
+                <span class="unread-indicator"></span>
+                <div class="notification-icon icon-request">📦</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Pickup Scheduled</div>
+                        <div class="notification-time">2 hours ago</div>
+                    </div>
+                    <div class="notification-message">
+                        A volunteer from <strong>Food Distribution Network</strong> will pick up your donation (ID: DN-2025-0426) today at 5:00 PM. Make sure the food is packaged and ready.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">👁️</span> View Pickup Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Donation impact notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-system">📊</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Donation Impact Report</div>
+                        <div class="notification-time">Yesterday</div>
+                    </div>
+                    <div class="notification-message">
+                        Your recent donations have helped feed 125 people this month! Check out your detailed impact report and see how your contributions are making a difference.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">📈</span> View Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Thank you notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-donation">❤️</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Thank You Note</div>
+                        <div class="notification-time">Yesterday</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>Senior Citizens Home</strong> has sent you a thank you note for your donation of breakfast items (ID: DN-2025-0422). Your generosity is helping reduce food insecurity in our community.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">📝</span> Read Note
+                        </button>
+                        <button class="notification-action action-secondary">
+                            <span class="action-icon">💬</span> Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food quality feedback notification -->
+            <div class="notification-item unread">
+                <span class="unread-indicator"></span>
+                <div class="notification-icon icon-system">⭐</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Feedback Received</div>
+                        <div class="notification-time">2 days ago</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>Community Shelter</strong> has rated your donation (ID: DN-2025-0421) 5 stars! They appreciated the quality and freshness of your donated meals.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">👁️</span> View Feedback
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System maintenance notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-alert">🔧</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">System Maintenance</div>
+                        <div class="notification-time">2 days ago</div>
+                    </div>
+                    <div class="notification-message">
+                        JeevanAhaar will be undergoing scheduled maintenance on April 27, 2025, from 2:00 AM to 4:00 AM. The system may be unavailable during this time.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Donor benefits notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-system">🎁</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Premium Donor Benefits</div>
+                        <div class="notification-time">3 days ago</div>
+                    </div>
+                    <div class="notification-message">
+                        Thank you for being a Premium Donor! You now have access to priority donation matching, detailed impact analytics, and customized donation schedules.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">🔍</span> Explore Benefits
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature update notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-system">🎉</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">New Feature Available</div>
+                        <div class="notification-time">5 days ago</div>
+                    </div>
+                    <div class="notification-message">
+                        We've added a new AI-powered quality analysis feature! Now you can get detailed insights about the nutritional value of your donations and their impact on recipients.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">📚</span> Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="load-more">Load More</button>
+        </div>
+    </div>
+    
+    <!-- Contact Button (Floating) -->
+    <button class="contact-btn" id="floatingContactBtn">
+        <i class="fas fa-comment-alt"></i>
+    </button>
+    
+    <!-- Contact Panel -->
+    <div class="contact-panel" id="contactPanel">
+        <div class="contact-panel-header">
+            <div class="contact-panel-title">Contact Us</div>
+            <button class="close-contact-panel" id="closeContactPanel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="contact-panel-content">
+            <div class="contact-section">
+                <h3 class="contact-section-title">Get in Touch</h3>
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-label">Phone</div>
+                        <div class="contact-value">+91 1800-123-4567</div>
+                    </div>
+                </div>
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">support@jeevanahaar.org</div>
+                    </div>
+                </div>
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-label">Address</div>
+                        <div class="contact-value">456 Food Park, Charity Lane, Bengaluru - 560001</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-section">
+                <h3 class="contact-section-title">Send a Message</h3>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Your Email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="subject">Subject</label>
+                        <input type="text" class="form-control" id="subject" placeholder="Message Subject">
+                    </div>
+            <script>
+                // Initialize the page when document is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Set current date
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    // Filter buttons
+    const filterButtons = document.querySelectorAll('.filter-button');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            const filterType = this.textContent.trim();
+            console.log('Filter selected:', filterType);
+            
+            // Get all notification items
+            const notificationItems = document.querySelectorAll('.notification-item');
+            
+            // Show all notifications if "All" is selected
+            if (filterType === 'All') {
+                notificationItems.forEach(item => {
+                    item.style.display = 'flex';
+                });
+                return;
+            }
+            
+            // Filter notifications based on type
+            notificationItems.forEach(item => {
+                const iconElement = item.querySelector('.notification-icon');
+                
+                // Check the icon class to determine the notification type
+                const isRequest = iconElement.classList.contains('icon-request');
+                const isPickup = item.querySelector('.notification-title').textContent.includes('Pickup');
+                const isSystem = iconElement.classList.contains('icon-system') || 
+                              iconElement.classList.contains('icon-alert');
+                
+                if ((filterType === 'Requests' && isRequest) || 
+                    (filterType === 'Pickup' && isPickup) || 
+                    (filterType === 'System' && isSystem)) {
+                    item.style.display = 'flex'; // Show matching notifications
+                } else {
+                    item.style.display = 'none'; // Hide non-matching notifications
+                }
+            });
+        });
+    });
+    
+    // Mark all as read button
+    const markAllReadBtn = document.querySelector('.mark-all-read');
+    markAllReadBtn.addEventListener('click', function() {
+        // Remove unread indicators and background
+        document.querySelectorAll('.notification-item.unread').forEach(item => {
+            item.classList.remove('unread');
+            item.querySelector('.unread-indicator').style.display = 'none';
+        });
+        
+        // Update the badge count
+        document.querySelector('.notification-badge').textContent = '0';
+    });
+    
+    // Notification item click
+    document.querySelectorAll('.notification-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            // Don't trigger if clicking on an action button
+            if (!e.target.closest('.notification-action')) {
+                // Remove unread status
+                if (this.classList.contains('unread')) {
+                    this.classList.remove('unread');
+                    this.querySelector('.unread-indicator').style.display = 'none';
+                    
+                    // Update badge count
+                    const badge = document.querySelector('.notification-badge');
+                    const currentCount = parseInt(badge.textContent);
+                    badge.textContent = Math.max(0, currentCount - 1);
+                }
+            }
+        });
+    });
+    
+    // Action buttons
+    document.querySelectorAll('.notification-action').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent triggering the notification item click
+            
+            const actionType = this.textContent.trim();
+            console.log('Action clicked:', actionType);
+            
+            // Special handling for "Fulfill Request" button
+            if (actionType.includes('Fulfill Request')) {
+                alert('Request accepted! You will be notified when pickup is scheduled.');
+                
+                // Remove the notification
+                const notificationItem = this.closest('.notification-item');
+                notificationItem.style.height = notificationItem.offsetHeight + 'px';
+                notificationItem.style.opacity = '1';
+                
+                setTimeout(() => {
+                    notificationItem.style.height = '0';
+                    notificationItem.style.opacity = '0';
+                    notificationItem.style.padding = '0';
+                    notificationItem.style.overflow = 'hidden';
+                    notificationItem.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        notificationItem.remove();
+                    }, 300);
+                }, 10);
+            }
+            
+            // Handle "Dismiss" button
+            if (actionType.includes('Dismiss')) {
+                const notificationItem = this.closest('.notification-item');
+                notificationItem.style.height = notificationItem.offsetHeight + 'px';
+                notificationItem.style.opacity = '1';
+                
+                setTimeout(() => {
+                    notificationItem.style.height = '0';
+                    notificationItem.style.opacity = '0';
+                    notificationItem.style.padding = '0';
+                    notificationItem.style.overflow = 'hidden';
+                    notificationItem.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        notificationItem.remove();
+                    }, 300);
+                }, 10);
+            }
+        });
+    });
+    
+    // Load more button
+    const loadMoreBtn = document.querySelector('.load-more');
+    loadMoreBtn.addEventListener('click', function() {
+        console.log('Load more clicked');
+        this.textContent = 'Loading...';
+        
+        // Simulate loading delay
+        setTimeout(() => {
+            this.textContent = 'No more notifications';
+            this.disabled = true;
+            this.style.opacity = '0.6';
+            this.style.cursor = 'default';
+        }, 1000);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Contact section toggle
+        const contactBtn = document.getElementById('contactBtn');
+        const contactInfo = document.getElementById('contactInfo');
+        const closeContact = document.getElementById('closeContact');
+        
+        contactBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            contactInfo.style.display = 'block';
+        });
+        
+        closeContact.addEventListener('click', function() {
+            contactInfo.style.display = 'none';
+        });
+        
+        // Form submission handlers
+        const personalInfoForm = document.getElementById('personalInfoForm');
+        const securityForm = document.getElementById('securityForm');
+        const notificationForm = document.getElementById('notificationForm');
+        
+        if (personalInfoForm) {
+            personalInfoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Personal information updated successfully!');
+            });
+        }
+        
+        if (securityForm) {
+            securityForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (newPassword !== confirmPassword) {
+                    alert('Passwords do not match. Please try again.');
+                    return;
+                }
+                
+                alert('Password updated successfully!');
+            });
+        }
+        
+        if (notificationForm) {
+            notificationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Notification preferences saved!');
+            });
+        }
+    });
+
+    // Mobile menu toggle
+    if (mobileMenuBtn && sidebar) {
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 768 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                e.target !== mobileMenuBtn) {
+                sidebar.classList.remove('active');
+            }
+        });
+    }
+});
+
+// Toast notification function (available globally)
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    if (toast && toastMessage) {
+        toastMessage.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+}
+            </script>
+    </body>
+    </html>

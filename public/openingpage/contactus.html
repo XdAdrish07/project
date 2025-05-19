@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Jeevan Ahaar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: #fff;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .jeevan {
+            color: #f44336;
+        }
+        
+        .ahaar {
+            color: #4CAF50;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav a {
+            text-decoration: none;
+            color: #333;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .btn-outline {
+            border: 1px solid #f44336;
+            color: #f44336;
+            background: transparent;
+        }
+        
+        .btn-filled {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
+        
+        .faq-section {
+            background-color: #f9f9f9;
+            padding: 40px;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+        }
+        
+        .faq-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer {
+            margin-bottom: 20px;
+        }
+        
+        .highlight {
+            font-weight: bold;
+        }
+        
+        .contact-section {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        .contact-info {
+            flex: 1;
+            padding-right: 40px;
+        }
+        
+        .contact-form {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        
+        .section-title {
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f44336;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+        }
+        
+        .form-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .form-submit:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">
+            <span class="jeevan">Jeevan</span><span class="ahaar">Ahaar</span>
+        </div>
+        <div class="nav">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="programs.html">Programs</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="auth-buttons">
+            <a href="login.html" class="btn btn-outline">Login / Register</a>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <div class="faq-container">
+            <h2 class="faq-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ What is Jeevan Ahaar?</div>
+                <div class="faq-answer">
+                    <span class="highlight">Jeevan Ahaar</span> is a platform that connects food donors with people in need, ensuring surplus food is shared instead of wasted. Our motto: <span class="highlight">"A Meal. A Smile. A Life."</span>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ How can I donate food?</div>
+                <div class="faq-answer">
+                    You can register as a donor on our website, select your donor type (individual/organization), and submit details about your food donation. Our team or volunteers will guide you through the next steps!
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ Who receives the food donations?</div>
+                <div class="faq-answer">
+                    We distribute food to verified NGOs, shelters, and directly to communities that need it the most, ensuring safe and timely delivery.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ Is it safe to donate cooked food?</div>
+                <div class="faq-answer">
+                    Yes, but we request that all donated cooked food be freshly prepared, hygienically packed, and shared within safe time limits to maintain quality.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ Do I need to pay anything to donate?</div>
+                <div class="faq-answer">
+                    <span class="highlight">No.</span> Jeevan Ahaar is a completely free platform for both donors and receivers. We believe kindness should have no cost.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact Section -->
+    <div class="contact-section">
+        <div class="contact-info">
+            <h2 class="section-title">Get in Touch</h2>
+            
+            <div class="contact-item">
+                <div class="icon">📞</div>
+                <div>
+                    <h3>Phone</h3>
+                    <p>+91 XXXXX XXXXX/p>
+                    <p>+91 XXXXX XXXXX</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="icon">✉️</div>
+                <div>
+                    <h3>Email</h3>
+                    <p>info@jeevanahaar.org</p>
+                    <p>support@jeevanahaar.org</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="icon">🏢</div>
+                <div>
+                    <h3>Address</h3>
+                    <p>123 MG Road, Kolkata</p>
+                    <p>Kolkata - XXXXXX, India</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="icon">⏰</div>
+                <div>
+                    <h3>Working Hours</h3>
+                    <p>Monday - Saturday: X:XX AM - X:XX PM</p>
+            
+                </div>
+            </div>
+        </div>
+        
+        <div class="contact-form">
+            <h2 class="section-title">Send Us a Message</h2>
+            
+            <form>
+                <div class="form-group">
+                    <label class="form-label" for="name">Your Name</label>
+                    <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="subject">Subject</label>
+                    <input type="text" id="subject" class="form-control" placeholder="Enter subject">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="message">Your Message</label>
+                    <textarea id="message" class="form-control" placeholder="Type your message here..." required></textarea>
+                </div>
+                
+                <button type="submit" class="form-submit">Submit Message</button>
+            </form>
+        </div>
+    </div>
+        
+</body>
+</html>

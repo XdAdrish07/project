@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - JeevanAhaar</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        :root {
+            --primary-color: #f05545;
+            --primary-light: #e04535;
+            --white: #ffffff;
+        }
+        
+        /* Auth Buttons */
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.auth-buttons .login {
+    padding: 8px 20px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.auth-buttons .login:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.auth-buttons .register {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.auth-buttons .register:hover {
+    background-color: var(--primary-light);
+}
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .logo-part1 {
+            color: #f05545;
+        }
+
+        .logo-part2 {
+            color: #4CAF50;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style-type: none;
+        }
+
+        .nav-menu li {
+            margin-left: 25px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #4CAF50;
+        }
+
+        .nav-menu a.active {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .login-btn {
+            padding: 8px 20px;
+            border: 1px solid #f05545;
+            border-radius: 4px;
+            background: transparent;
+            color: #f05545;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+    
+        .login-btn:hover {
+            background-color: #f0554510;
+        }
+    
+        .register-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            background: #f05545;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+    
+        .register-btn:hover {
+            background: #e04535;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 60px 0;
+        }
+
+        .gallery-title {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .gallery-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: #555;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .gallery-item {
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            height: 250px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-image {
+            filter: brightness(0.8);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+
+        .gallery-caption h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .gallery-caption p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Gallery Filters */
+        .gallery-filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: #f1f1f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-menu {
+                margin: 15px 0;
+            }
+            
+            .nav-menu li {
+                margin: 0 10px;
+            }
+            
+            .gallery-filters {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-part1">Jeevan</span><span class="logo-part2">Ahaar</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="./aboutus.html">About Us</a></li>
+                <li><a href="./ourprograms.html">Programs</a></li>
+                <li><a href="./gallery.html" class="active">Gallery</a></li>
+                <li><a href="./contactus.html">Contact</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="index.html#login-modal" class="login">Login / Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="container">
+            <h2 class="gallery-title">Our Impact Gallery</h2>
+            <p class="gallery-description">
+                Glimpses of our journey in reducing food waste and feeding the hungry. These images represent our commitment to building a sustainable and equitable food ecosystem.
+            </p>
+            
+            <div class="gallery-filters">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Food Collection</button>
+                <button class="filter-btn">Distribution</button>
+                <button class="filter-btn">Community</button>
+                <button class="filter-btn">Events</button>
+            </div>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Food Collection" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Restaurant Food Collection</h3>
+                        <p>Our volunteers collecting surplus food from local restaurants</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Food Distribution" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Community Distribution</h3>
+                        <p>Distributing meals to those in need at community centers</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="App Demonstration" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>App Training Session</h3>
+                        <p>Teaching donors how to use our food rescue app</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Volunteer Team" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Volunteer Team</h3>
+                        <p>Our dedicated volunteers who make our mission possible</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Corporate Partnership" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Corporate Partnership</h3>
+                        <p>Signing agreement with corporate cafeterias for regular donations</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Food Sorting" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Food Sorting Center</h3>
+                        <p>Sorting and packaging rescued food for distribution</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Community Event" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Community Awareness Event</h3>
+                        <p>Educating community members about food waste and hunger</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Food Delivery" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Food Transportation</h3>
+                        <p>Our delivery vehicle taking food to distribution centers</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Appreciation Event" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Donor Appreciation Event</h3>
+                        <p>Recognizing our regular food donors for their contributions</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Food Packaging" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h3>Eco-friendly Packaging</h3>
+                        <p>Sustainable packaging solutions for rescued food</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Simple filter functionality (for demonstration purposes)
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // In a real implementation, filter gallery items based on categories
+                // This is just a visual demo
+            });
+        });
+    </script>
+</body>
+</html>

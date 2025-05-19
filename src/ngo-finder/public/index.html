@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Finder - Jeevan Ahaar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2E7D32;
+            --accent-color: #8BC34A;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .ngo-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .ngo-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(139, 195, 74, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <h1>NGO Finder</h1>
+        <p class="lead">Find and connect with NGOs in your area</p>
+    </div>
+
+    <div class="container">
+        <div class="search-section">
+            <h2 class="mb-4">Search NGOs</h2>
+            <form id="searchForm">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="city" placeholder="Enter city">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" class="form-control" id="state" placeholder="Enter state">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="preferences" class="form-label">Food Preferences</label>
+                        <input type="text" class="form-control" id="preferences" placeholder="e.g., vegetarian, non-vegetarian">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Search Results</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                Register NGO
+            </button>
+        </div>
+
+        <div id="results" class="row">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Register NGO Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Register NGO</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">NGO Name</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="tel" class="form-control" id="phone" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="registrationNumber" class="form-label">Registration Number</label>
+                                <input type="text" class="form-control" id="registrationNumber" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="street" class="form-label">Street Address</label>
+                                <input type="text" class="form-control" id="street">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" class="form-control" id="state" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Food Preferences</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="vegetarian" id="veg">
+                                <label class="form-check-label" for="veg">Vegetarian</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="non-vegetarian" id="nonVeg">
+                                <label class="form-check-label" for="nonVeg">Non-Vegetarian</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="vegan" id="vegan">
+                                <label class="form-check-label" for="vegan">Vegan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="jain" id="jain">
+                                <label class="form-check-label" for="jain">Jain</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="halal" id="halal">
+                                <label class="form-check-label" for="halal">Halal</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="dailyMeals" class="form-label">Daily Meal Capacity</label>
+                                <input type="number" class="form-control" id="dailyMeals" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="storage" class="form-label">Storage Capacity</label>
+                                <input type="text" class="form-control" id="storage" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="startTime" class="form-label">Operating Hours Start</label>
+                                <input type="time" class="form-control" id="startTime" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="endTime" class="form-label">Operating Hours End</label>
+                                <input type="time" class="form-control" id="endTime" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="registerBtn">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Search functionality
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const preferences = document.getElementById('preferences').value;
+
+            let url = '/api/ngos/search/location?';
+            if (city) url += `city=${city}&`;
+            if (state) url += `state=${state}`;
+
+            try {
+                const response = await fetch(url);
+                const ngos = await response.json();
+                displayResults(ngos);
+            } catch (error) {
+                console.error('Error searching NGOs:', error);
+                alert('Error searching NGOs. Please try again.');
+            }
+        });
+
+        // Register NGO functionality
+        document.getElementById('registerBtn').addEventListener('click', async () => {
+            const form = document.getElementById('registerForm');
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                registrationNumber: document.getElementById('registrationNumber').value,
+                description: document.getElementById('description').value,
+                address: {
+                    street: document.getElementById('street').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value
+                },
+                foodPreferences: Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                    .map(checkbox => checkbox.value),
+                capacity: {
+                    dailyMeals: parseInt(document.getElementById('dailyMeals').value),
+                    storage: document.getElementById('storage').value
+                },
+                operatingHours: {
+                    start: document.getElementById('startTime').value,
+                    end: document.getElementById('endTime').value
+                }
+            };
+
+            try {
+                const response = await fetch('/api/ngos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert('NGO registered successfully!');
+                    form.reset();
+                    bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+                } else {
+                    const error = await response.json();
+                    alert(error.message || 'Error registering NGO');
+                }
+            } catch (error) {
+                console.error('Error registering NGO:', error);
+                alert('Error registering NGO. Please try again.');
+            }
+        });
+
+        // Display results
+        function displayResults(ngos) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (ngos.length === 0) {
+                resultsDiv.innerHTML = '<p>No NGOs found matching your criteria.</p>';
+                return;
+            }
+
+            ngos.forEach(ngo => {
+                const card = document.createElement('div');
+                card.className = 'col-md-6';
+                card.innerHTML = `
+                    <div class="ngo-card">
+                        <h3>${ngo.name}</h3>
+                        <p><strong>Location:</strong> ${ngo.address.city}, ${ngo.address.state}</p>
+                        <p><strong>Food Preferences:</strong> ${ngo.foodPreferences.join(', ')}</p>
+                        <p><strong>Capacity:</strong> ${ngo.capacity.dailyMeals} meals/day</p>
+                        <p><strong>Operating Hours:</strong> ${ngo.operatingHours.start} - ${ngo.operatingHours.end}</p>
+                        <button class="btn btn-outline-primary" onclick="viewNgoDetails('${ngo._id}')">
+                            View Details
+                        </button>
+                    </div>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        }
+
+        // View NGO details
+        async function viewNgoDetails(id) {
+            try {
+                const response = await fetch(`/api/ngos/${id}`);
+                const ngo = await response.json();
+                
+                // Create modal for details
+                const modal = document.createElement('div');
+                modal.className = 'modal fade';
+                modal.id = 'ngoDetailsModal';
+                modal.innerHTML = `
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">${ngo.name}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Email:</strong> ${ngo.email}</p>
+                                <p><strong>Phone:</strong> ${ngo.phone}</p>
+                                <p><strong>Address:</strong> ${ngo.address.street}, ${ngo.address.city}, ${ngo.address.state}</p>
+                                <p><strong>Registration Number:</strong> ${ngo.registrationNumber}</p>
+                                <p><strong>Description:</strong> ${ngo.description}</p>
+                                <p><strong>Food Preferences:</strong> ${ngo.foodPreferences.join(', ')}</p>
+                                <p><strong>Daily Meal Capacity:</strong> ${ngo.capacity.dailyMeals}</p>
+                                <p><strong>Storage Capacity:</strong> ${ngo.capacity.storage}</p>
+                                <p><strong>Operating Hours:</strong> ${ngo.operatingHours.start} - ${ngo.operatingHours.end}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+                
+                modal.addEventListener('hidden.bs.modal', () => {
+                    modal.remove();
+                });
+            } catch (error) {
+                console.error('Error fetching NGO details:', error);
+                alert('Error fetching NGO details. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html> 

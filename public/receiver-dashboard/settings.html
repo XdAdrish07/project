@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings — JeevanAhaar</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #FF5722;
+            --background-color: #f5f5f5;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --api-color: #2196F3;
+            --api-light-color: #E3F2FD;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 230px;
+            background-color: white;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+        
+        .logo {
+            padding: 10px 20px;
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo span:first-child {
+            color: #FF5722;
+        }
+        
+        .logo span:last-child {
+            color: #4CAF50;
+        }
+        
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        
+        .menu-item.active {
+            background-color: #e8f5e9;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .menu-item i {
+            margin-right: 12px;
+        }
+        
+        .notification-badge {
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            position: absolute;
+            right: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            color: var(--text-color);
+        }
+        
+        .date {
+            color: #757575;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .settings-card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .profile-photo-container {
+            position: relative;
+            margin-right: 24px;
+        }
+        
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #555;
+            overflow: hidden;
+        }
+        
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .change-photo-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .profile-details {
+            flex: 1;
+        }
+        
+        .profile-details h2 {
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+        
+        .profile-details p {
+            color: #757575;
+        }
+        
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .half {
+            width: 50%;
+        }
+        
+        .settings-input {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .settings-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        label {
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        
+        .save-settings {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .save-settings:hover {
+            background-color: #43a047;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+        
+        .logout-button {
+            background-color: #f5f5f5;
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 4px;
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logout-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .upload-input {
+            display: none;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            position: absolute;
+            bottom: 0;
+            width: 230px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .profile-info {
+            line-height: 1.4;
+        }
+        
+        .username {
+            font-weight: bold;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        
+        .role {
+            color: #757575;
+            font-size: 12px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding-bottom: 10px;
+            }
+            
+            .user-profile {
+                position: static;
+                width: 100%;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .half {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-photo-container {
+                margin-right: 0;
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <span>Jeevan</span><span>Ahaar</span>
+        </div>
+        <a href="./dashboard.html" class="menu-item">
+            <i>📊</i> Dashboard
+        </a>
+        <a href="./pickups.html" class="menu-item">
+            <i>📦</i> Food Pickups
+        </a>
+        <a href="./notification.html" class="menu-item">
+            <i>🔔</i> Notifications
+            <span class="notification-badge">7</span>
+        </a>
+        <a href="settings.html" class="menu-item active">
+            <i>⚙️</i> Settings
+        </a>
+        
+        <div class="user-profile">
+            <div class="avatar">OR</div>
+            <div class="profile-info">
+                <div class="username">Orphanage</div>
+                <div class="role">Food Receiver</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="top-bar">
+            <div>
+                <h1 class="page-title">Settings</h1>
+                <div class="date" id="currentDate">Friday, April 25, 2025</div>
+            </div>
+            <button class="save-settings" id="save-settings-btn">
+                <i>💾</i> Save Changes
+            </button>
+        </div>
+        
+        <div class="settings-card">
+            <div class="profile-header">
+                <div class="profile-photo-container">
+                    <div class="profile-photo" id="profile-photo">
+                        <span id="profile-initials">OR</span>
+                        <!-- Profile image will be inserted here by JavaScript -->
+                    </div>
+                    <button class="change-photo-btn" id="change-photo-btn">
+                        <i>📷</i>
+                    </button>
+                    <input type="file" id="photo-upload" class="upload-input" accept="image/*">
+                </div>
+                <div class="profile-details">
+                    <h2>Profile Information</h2>
+                    <p>Update your account details and organization information</p>
+                </div>
+            </div>
+            
+            <div class="settings-form">
+                <div class="form-group">
+                    <label for="organization-name">Organization Name</label>
+                    <input type="text" id="organization-name" class="settings-input" value="Orphanage">
+                </div>
+                
+                <div class="form-group">
+                    <label for="organization-type">Organization Type</label>
+                    <select id="organization-type" class="settings-input">
+                        <option value="orphanage" selected>Orphanage</option>
+                        <option value="shelter">Shelter</option>
+                        <option value="school">School</option>
+                        <option value="community-center">Community Center</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="contact-name">Contact Person</label>
+                        <input type="text" id="contact-name" placeholder="Full Name" class="settings-input">
+                    </div>
+                    <div class="form-group half">
+                        <label for="contact-phone">Phone Number</label>
+                        <input type="tel" id="contact-phone" placeholder="+91 98765 43210" class="settings-input">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="organization@example.com" class="settings-input">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" rows="3" class="settings-input"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="city">City</label>
+                        <input type="text" id="city" class="settings-input">
+                    </div>
+                    <div class="form-group half">
+                        <label for="postal-code">Postal Code</label>
+                        <input type="text" id="postal-code" class="settings-input">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="beneficiaries">Number of Beneficiaries</label>
+                    <input type="number" id="beneficiaries" min="1" class="settings-input">
+                </div>
+                
+                <div class="form-group">
+                    <label for="darpan-id">NGO DARPAN ID</label>
+                    <input type="text" id="darpan-id" class="settings-input" placeholder="Enter your NGO DARPAN ID">
+                </div>
+                
+                <div class="form-group">
+                    <label for="about">About Organization</label>
+                    <textarea id="about" rows="4" class="settings-input" 
+                        placeholder="Tell donors about your organization and the people you serve..."></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-card">
+            <h3>Food Preferences</h3>
+            <p style="color: #757575; margin-bottom: 16px;">Specify food types your organization can accept</p>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="veg" checked>
+                    <label for="veg">Vegetarian</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="non-veg" checked>
+                    <label for="non-veg">Non-Vegetarian</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="vegan">
+                    <label for="vegan">Vegan</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="gluten-free">
+                    <label for="gluten-free">Gluten Free</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="dairy-free">
+                    <label for="dairy-free">Dairy Free</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="dietary-notes">Special Dietary Requirements</label>
+                <textarea id="dietary-notes" rows="2" class="settings-input" 
+                    placeholder="Please specify any allergies or special dietary needs..."></textarea>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="logout-btn" class="logout-button">
+                <i>🚪</i> Logout
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Profile photo handling
+            const profilePhoto = document.getElementById('profile-photo');
+            const profileInitials = document.getElementById('profile-initials');
+            const changePhotoBtn = document.getElementById('change-photo-btn');
+            const photoUpload = document.getElementById('photo-upload');
+            
+            // Load profile photo from localStorage if exists
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                profileInitials.style.display = 'none';
+                const img = document.createElement('img');
+                img.src = savedPhoto;
+                profilePhoto.appendChild(img);
+            }
+            
+            // Handle profile photo change
+            changePhotoBtn.addEventListener('click', function() {
+                photoUpload.click();
+            });
+            
+            photoUpload.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Remove existing image if any
+                        const existingImg = profilePhoto.querySelector('img');
+                        if (existingImg) {
+                            existingImg.remove();
+                        }
+                        
+                        profileInitials.style.display = 'none';
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        profilePhoto.appendChild(img);
+                        
+                        // Save to localStorage
+                        localStorage.setItem('profilePhoto', e.target.result);
+                        
+                        // Update sidebar avatar
+                        const sidebarAvatar = document.querySelector('.avatar');
+                        if (sidebarAvatar) {
+                            sidebarAvatar.innerHTML = '';
+                            const smallImg = document.createElement('img');
+                            smallImg.src = e.target.result;
+                            smallImg.style.width = '100%';
+                            smallImg.style.height = '100%';
+                            smallImg.style.objectFit = 'cover';
+                            sidebarAvatar.appendChild(smallImg);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Save settings
+            document.getElementById('save-settings-btn').addEventListener('click', function() {
+                const settings = {
+                    organizationName: document.getElementById('organization-name').value,
+                    organizationType: document.getElementById('organization-type').value,
+                    contactName: document.getElementById('contact-name').value,
+                    contactPhone: document.getElementById('contact-phone').value,
+                    email: document.getElementById('email').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    postalCode: document.getElementById('postal-code').value,
+                    beneficiaries: document.getElementById('beneficiaries').value,
+                    darpanId: document.getElementById('darpan-id').value,
+                    about: document.getElementById('about').value,
+                    dietaryNotes: document.getElementById('dietary-notes').value,
+                    preferences: {
+                        veg: document.getElementById('veg').checked,
+                        nonVeg: document.getElementById('non-veg').checked,
+                        vegan: document.getElementById('vegan').checked,
+                        glutenFree: document.getElementById('gluten-free').checked,
+                        dairyFree: document.getElementById('dairy-free').checked
+                    }
+                };
+                
+                // Save to localStorage
+                localStorage.setItem('userSettings', JSON.stringify(settings));
+                
+                // Update username in sidebar
+                if (settings.organizationName) {
+                    document.querySelector('.username').textContent = settings.organizationName;
+                }
+                
+                alert('Settings saved successfully!');
+            });
+            
+            // Load saved settings
+            const savedSettings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+            
+            // Apply saved settings to form fields
+            if (savedSettings.organizationName) document.getElementById('organization-name').value = savedSettings.organizationName;
+            if (savedSettings.organizationType) document.getElementById('organization-type').value = savedSettings.organizationType;
+            if (savedSettings.contactName) document.getElementById('contact-name').value = savedSettings.contactName;
+            if (savedSettings.contactPhone) document.getElementById('contact-phone').value = savedSettings.contactPhone;
+            if (savedSettings.email) document.getElementById('email').value = savedSettings.email;
+            if (savedSettings.address) document.getElementById('address').value = savedSettings.address;
+            if (savedSettings.city) document.getElementById('city').value = savedSettings.city;
+            if (savedSettings.postalCode) document.getElementById('postal-code').value = savedSettings.postalCode;
+            if (savedSettings.beneficiaries) document.getElementById('beneficiaries').value = savedSettings.beneficiaries;
+            if (savedSettings.darpanId) document.getElementById('darpan-id').value = savedSettings.darpanId;
+            if (savedSettings.about) document.getElementById('about').value = savedSettings.about;
+            if (savedSettings.dietaryNotes) document.getElementById('dietary-notes').value = savedSettings.dietaryNotes;
+            
+            if (savedSettings.preferences) {
+                if (savedSettings.preferences.veg !== undefined) document.getElementById('veg').checked = savedSettings.preferences.veg;
+                if (savedSettings.preferences.nonVeg !== undefined) document.getElementById('non-veg').checked = savedSettings.preferences.nonVeg;
+                if (savedSettings.preferences.vegan !== undefined) document.getElementById('vegan').checked = savedSettings.preferences.vegan;
+                if (savedSettings.preferences.glutenFree !== undefined) document.getElementById('gluten-free').checked = savedSettings.preferences.glutenFree;
+                if (savedSettings.preferences.dairyFree !== undefined) document.getElementById('dairy-free').checked = savedSettings.preferences.dairyFree;
+            }
+            
+            // Logout button functionality
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    // Clear login status
+                    localStorage.setItem('isLoggedIn', 'false');
+                    
+                    // Redirect to login page
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications — JeevanAhaar</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #FF5722;
+            --background-color: #f5f5f5;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --api-color: #2196F3;
+            --api-light-color: #E3F2FD;
+            --notification-read: #f9f9f9;
+            --notification-unread: #edf7ed;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 230px;
+            background-color: white;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+        
+        .logo {
+            padding: 10px 20px;
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo span:first-child {
+            color: #FF5722;
+        }
+        
+        .logo span:last-child {
+            color: #4CAF50;
+        }
+        
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        
+        .menu-item.active {
+            background-color: #e8f5e9;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .menu-item i {
+            margin-right: 12px;
+        }
+        
+        .notification-badge {
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            position: absolute;
+            right: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            color: var(--text-color);
+        }
+        
+        .date {
+            color: #757575;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .notification-filters {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .filter-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #757575;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .filter-button.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .notification-list {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .notification-item.unread {
+            background-color: var(--notification-unread);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .icon-donation {
+            background-color: #edf7ed;
+            color: var(--primary-color);
+        }
+        
+        .icon-request {
+            background-color: #fff8e1;
+            color: #ffa000;
+        }
+        
+        .icon-system {
+            background-color: var(--api-light-color);
+            color: var(--api-color);
+        }
+        
+        .icon-alert {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .notification-time {
+            color: #757575;
+            font-size: 12px;
+        }
+        
+        .notification-message {
+            color: #555;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .notification-action {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .action-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .action-secondary {
+            background-color: transparent;
+            color: #757575;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .action-icon {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        
+        .unread-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #757575;
+        }
+        
+        .empty-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+        
+        .empty-message {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .load-more {
+            display: block;
+            text-align: center;
+            padding: 15px;
+            background-color: #f9f9f9;
+            color: #757575;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .load-more:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            position: absolute;
+            bottom: 0;
+            width: 230px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .profile-details {
+            line-height: 1.4;
+        }
+        
+        .username {
+            font-weight: bold;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        
+        .role {
+            color: #757575;
+            font-size: 12px;
+        }
+        
+        /* Mark All as Read Button */
+        .mark-all-read {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #757575;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .mark-all-read i {
+            margin-right: 5px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding-bottom: 10px;
+            }
+            
+            .user-profile {
+                position: static;
+                width: 100%;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <span>Jeevan</span><span>Ahaar</span>
+        </div>
+        <a href="./dashboard.html" class="menu-item">
+            <i>📊</i> Dashboard
+        </a>
+        <a href="./pickups.html" class="menu-item">
+            <i>📦</i> Food Pickups
+        </a>
+        <a href="#" class="menu-item active">
+            <i>🔔</i> Notifications
+            <span class="notification-badge">7</span>
+        </a>
+        <a href="./settings.html" class="menu-item">
+            <i>⚙️</i> Settings
+        </a>
+        
+        <div class="user-profile">
+            <div class="avatar">OR</div>
+            <div class="profile-details">
+                <div class="username">Orphanage</div>
+                <div class="role">Food Receiver</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="top-bar">
+            <div>
+                <h1 class="page-title">Notifications</h1>
+                <div class="date" id="currentDate">Friday, April 25, 2025</div>
+            </div>
+            <button class="mark-all-read">
+                <i>✓</i> Mark all as read
+            </button>
+        </div>
+        
+        <div class="notification-filters">
+            <button class="filter-button active">All</button>
+            <button class="filter-button">Donations</button>
+            <button class="filter-button">Requests</button>
+            <button class="filter-button">System</button>
+        </div>
+        
+        <div class="notification-list">
+            <!-- Donation accepted notification -->
+            <div class="notification-item unread">
+                <span class="unread-indicator"></span>
+                <div class="notification-icon icon-donation">🍲</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Donation Accepted</div>
+                        <div class="notification-time">10 minutes ago</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>Food For All Restaurant</strong> has accepted your request for Main Course meals for 50 people scheduled for April 26, 2025.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">👁️</span> View Details
+                        </button>
+                        <button class="notification-action action-secondary">
+                            <span class="action-icon">💬</span> Send Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New donation notification -->
+            <div class="notification-item unread">
+                <span class="unread-indicator"></span>
+                <div class="notification-icon icon-donation">🥐</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">New Donation Available</div>
+                        <div class="notification-time">45 minutes ago</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>Morning Delights Cafe</strong> has posted 30 servings of Breakfast Items that will expire within 2 days. Reserve this donation before it's claimed by someone else!
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">✓</span> Claim Now
+                        </button>
+                        <button class="notification-action action-secondary">
+                            <span class="action-icon">✕</span> Dismiss
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Request accepted notification -->
+            <div class="notification-item unread">
+                <span class="unread-indicator"></span>
+                <div class="notification-icon icon-request">📋</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Food Request Update</div>
+                        <div class="notification-time">1 hour ago</div>
+                    </div>
+                    <div class="notification-message">
+                        Your request for <strong>Dry Rations</strong> (ID: REQ-2025-0428) has been updated to <strong>Scheduled</strong>. Delivery is confirmed for April 28, 2025.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">👁️</span> Track Delivery
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food quality analysis notification -->
+            <div class="notification-item unread">
+                <span class="unread-indicator"></span>
+                <div class="notification-icon icon-system">🤖</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">AI Quality Analysis Complete</div>
+                        <div class="notification-time">3 hours ago</div>
+                    </div>
+                    <div class="notification-message">
+                        Quality analysis for delivery <strong>FD-2025-0423</strong> from <strong>Fresh Produce Market</strong> is now available. Overall score: <strong>86%</strong>.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">📊</span> View Analysis
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review requested notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-system">⭐</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Review Requested</div>
+                        <div class="notification-time">Yesterday</div>
+                    </div>
+                    <div class="notification-message">
+                        Please provide your feedback for the delivery from <strong>Sweet Treats Bakery</strong> (ID: FD-2025-0420). Your review helps improve service quality.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">⭐</span> Leave Review
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upcoming pickup reminder -->
+            <div class="notification-item">
+                <div class="notification-icon icon-request">⏰</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Upcoming Pickup Reminder</div>
+                        <div class="notification-time">Yesterday</div>
+                    </div>
+                    <div class="notification-message">
+                        Reminder: You have a scheduled food pickup tomorrow at 10:00 AM from <strong>Food For All Restaurant</strong>. Please ensure someone is available to receive the delivery.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">📅</span> Set Reminder
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System maintenance notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-alert">🔧</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">System Maintenance</div>
+                        <div class="notification-time">2 days ago</div>
+                    </div>
+                    <div class="notification-message">
+                        JeevanAhaar will be undergoing scheduled maintenance on April 27, 2025, from 2:00 AM to 4:00 AM. The system may be unavailable during this time.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature update notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-system">🎉</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">New Feature Available</div>
+                        <div class="notification-time">3 days ago</div>
+                    </div>
+                    <div class="notification-message">
+                        We've added a new AI-powered quality analysis feature! Now you can get detailed insights about the nutritional value and freshness of donated food before pickup.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">📚</span> Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Success story notification -->
+            <div class="notification-item">
+                <div class="notification-icon icon-system">📰</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">Success Story Opportunity</div>
+                        <div class="notification-time">5 days ago</div>
+                    </div>
+                    <div class="notification-message">
+                        JeevanAhaar is collecting success stories to showcase the impact our platform is making. Share your experience to inspire others and promote food donation.
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-action action-primary">
+                            <span class="action-icon">📝</span> Share Story
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="load-more">Load More</button>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize the page when document is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Filter buttons
+const filterButtons = document.querySelectorAll('.filter-button');
+filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        const filterType = this.textContent.trim();
+        console.log('Filter selected:', filterType);
+        
+        // Get all notification items
+        const notificationItems = document.querySelectorAll('.notification-item');
+        
+        // Show all notifications if "All" is selected
+        if (filterType === 'All') {
+            notificationItems.forEach(item => {
+                item.style.display = 'flex';
+            });
+            return;
+        }
+        
+        // Filter notifications based on type
+        notificationItems.forEach(item => {
+            const iconElement = item.querySelector('.notification-icon');
+            
+            // Check the icon class to determine the notification type
+            const isDonation = iconElement.classList.contains('icon-donation');
+            const isRequest = iconElement.classList.contains('icon-request');
+            const isSystem = iconElement.classList.contains('icon-system') || 
+                            iconElement.classList.contains('icon-alert');
+            
+            if ((filterType === 'Donations' && isDonation) || 
+                (filterType === 'Requests' && isRequest) || 
+                (filterType === 'System' && isSystem)) {
+                item.style.display = 'flex'; // Show matching notifications
+            } else {
+                item.style.display = 'none'; // Hide non-matching notifications
+            }
+        });
+    });
+});
+            
+            
+            // Mark all as read button
+            const markAllReadBtn = document.querySelector('.mark-all-read');
+            markAllReadBtn.addEventListener('click', function() {
+                // Remove unread indicators and background
+                document.querySelectorAll('.notification-item.unread').forEach(item => {
+                    item.classList.remove('unread');
+                    item.querySelector('.unread-indicator').style.display = 'none';
+                });
+                
+                // Update the badge count
+                document.querySelector('.notification-badge').textContent = '0';
+            });
+            
+            // Notification item click
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on an action button
+                    if (!e.target.closest('.notification-action')) {
+                        // Remove unread status
+                        if (this.classList.contains('unread')) {
+                            this.classList.remove('unread');
+                            this.querySelector('.unread-indicator').style.display = 'none';
+                            
+                            // Update badge count
+                            const badge = document.querySelector('.notification-badge');
+                            const currentCount = parseInt(badge.textContent);
+                            badge.textContent = Math.max(0, currentCount - 1);
+                        }
+                    }
+                });
+            });
+            
+            // Action buttons
+            document.querySelectorAll('.notification-action').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent triggering the notification item click
+                    
+                    const actionType = this.textContent.trim();
+                    console.log('Action clicked:', actionType);
+                    
+                    // Special handling for "Claim Now" button
+                    if (actionType.includes('Claim Now')) {
+                        alert('Donation claimed successfully! You will be notified when it is ready for pickup.');
+                        
+                        // Remove the notification
+                        const notificationItem = this.closest('.notification-item');
+                        notificationItem.style.height = notificationItem.offsetHeight + 'px';
+                        notificationItem.style.opacity = '1';
+                        
+                        setTimeout(() => {
+                            notificationItem.style.height = '0';
+                            notificationItem.style.opacity = '0';
+                            notificationItem.style.padding = '0';
+                            notificationItem.style.overflow = 'hidden';
+                            notificationItem.style.transition = 'all 0.3s ease';
+                            
+                            setTimeout(() => {
+                                notificationItem.remove();
+                            }, 300);
+                        }, 10);
+                    }
+                    
+                    // Handle "Dismiss" button
+                    if (actionType.includes('Dismiss')) {
+                        const notificationItem = this.closest('.notification-item');
+                        notificationItem.style.height = notificationItem.offsetHeight + 'px';
+                        notificationItem.style.opacity = '1';
+                        
+                        setTimeout(() => {
+                            notificationItem.style.height = '0';
+                            notificationItem.style.opacity = '0';
+                            notificationItem.style.padding = '0';
+                            notificationItem.style.overflow = 'hidden';
+                            notificationItem.style.transition = 'all 0.3s ease';
+                            
+                            setTimeout(() => {
+                                notificationItem.remove();
+                            }, 300);
+                        }, 10);
+                    }
+                });
+            });
+            
+            // Load more button
+            const loadMoreBtn = document.querySelector('.load-more');
+            loadMoreBtn.addEventListener('click', function() {
+                console.log('Load more clicked');
+                this.textContent = 'Loading...';
+                
+                // Simulate loading delay
+                setTimeout(() => {
+                    this.textContent = 'No more notifications';
+                    this.disabled = true;
+                    this.style.opacity = '0.6';
+                    this.style.cursor = 'default';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

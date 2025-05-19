@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jeevan Ahaar</title>
+    <link
+      rel="stylesheet"
+      href="../..//src/pages/opening page/index.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../src/pages/opening page/login.css"
+    />
+    <script src="/jeevan-aahar-client/src/script.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <a href="#" class="logo">Jeevan<span>Ahaar</span></a>
+        <ul class="nav-menu">
+          <li><a href="#">Home</a></li>
+          <li><a href="./aboutus.html">About Us</a></li>
+          <li><a href="./ourprograms.html">Programs</a></li>
+          <li><a href="./gallery.html">Gallery</a></li>
+          <li><a href="./contactus.html">Contact</a></li>
+        </ul>
+        <div class="auth-buttons">
+          <a href="./login.html" class="login-btn" id="login-button">Login / Register</a>
+          <!-- <a href="./login.html" class="register-btn" id="register-button">Register</a> -->
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1>A Meal. A Smile. A Life.</h1>
+      <p>
+        Join us in our mission to eliminate hunger and provide nutritious food
+        to those in need across India.
+      </p>
+      <a
+        href="./mission.html"
+        class="cta-btn"
+        >Join Our Mission</a
+      >
+    </section>
+    <!-- Register Modal -->
+    <div class="modal" id="register-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button class="close-btn" id="close-register-modal">&times;</button>
+          <div class="modal-header-overlay">
+            <div class="modal-welcome-text">Join Jeevan Ahaar</div>
+            <div class="fruits-decoration">
+              <div class="fruit" style="background-color: #ff6347"></div>
+              <div class="fruit" style="background-color: #ffa500"></div>
+              <div class="fruit" style="background-color: #32cd32"></div>
+              <div class="fruit" style="background-color: #8a2be2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-panel="donor-panel">
+            Food Donor
+          </button>
+          <button class="tab-btn" data-panel="receiver-panel">
+            Food Receiver
+          </button>
+        </div>
+
+        <div class="register-form">
+          <div class="tab-panel active" id="donor-panel">
+            <form>
+              <div class="form-group">
+                <label for="donor-name">Full Name / Organization</label>
+                <input
+                  type="text"
+                  id="donor-name"
+                  class="form-control"
+                  placeholder="Enter your name or organization"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="donor-email">Email Address</label>
+                <input
+                  type="email"
+                  id="donor-email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="donor-phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="donor-phone"
+                  class="form-control"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="donor-password">Create Password</label>
+                <input
+                  type="password"
+                  id="donor-password"
+                  class="form-control"
+                  placeholder="Create a password"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="donor-type">Select Donor Type</label>
+                <select id="donor-type" class="form-control">
+                  <option value="individual">Individual</option>
+                  <option value="restaurant">Restaurant</option>
+                  <option value="ngo">NGO</option>
+                </select>
+              </div>
+
+              <!-- FSSAI ID for Restaurants -->
+              <div id="fssai-id-group" class="form-group" style="display: none">
+                <label for="fssai-id">FSSAI ID</label>
+                <input
+                  type="text"
+                  id="fssai-id"
+                  class="form-control"
+                  placeholder="Enter your FSSAI ID"
+                />
+              </div>
+
+              <!-- Darpan ID for NGOs -->
+              <div
+                id="darpan-id-group"
+                class="form-group"
+                style="display: none"
+              >
+                <label for="darpan-id">Darpan ID</label>
+                <input
+                  type="text"
+                  id="darpan-id"
+                  class="form-control"
+                  placeholder="Enter your Darpan ID"
+                />
+              </div>
+              <script>
+                document
+                  .getElementById("donor-type")
+                  .addEventListener("change", function () {
+                    var donorType = this.value;
+
+                    // Hide both FSSAI and Darpan ID fields initially
+                    document.getElementById("fssai-id-group").style.display =
+                      "none";
+                    document.getElementById("darpan-id-group").style.display =
+                      "none";
+
+                    // Show specific field based on donor type
+                    if (donorType === "restaurant") {
+                      document.getElementById("fssai-id-group").style.display =
+                        "block";
+                    } else if (donorType === "ngo") {
+                      document.getElementById("darpan-id-group").style.display =
+                        "block";
+                    }
+                  });
+              </script>
+              <button type="submit" class="btn btn-donor">
+                Register as Food Donor
+              </button>
+            </form>
+          </div>
+
+          <div class="tab-panel" id="receiver-panel">
+            <form>
+              <div class="form-group">
+                <label for="receiver-name">NGO / Organization Name</label>
+                <input
+                  type="text"
+                  id="receiver-name"
+                  class="form-control"
+                  placeholder="Enter organization name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="receiver-email">Email Address</label>
+                <input
+                  type="email"
+                  id="receiver-email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="receiver-phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="receiver-phone"
+                  class="form-control"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              <div class="form-group">
+                <label for="donor-darpan-id">NGO DARPAN ID</label>
+                <input
+                  type="text"
+                  id="donor-darpan-id"
+                  class="form-control"
+                  placeholder="Enter your NGO DARPAN ID"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="donor-location">Location</label>
+                <input
+                  type="text"
+                  id="donor-location"
+                  class="form-control"
+                  placeholder="Food receiver address"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="receiver-password">Create Password</label>
+                <input
+                  type="password"
+                  id="receiver-password"
+                  class="form-control"
+                  placeholder="Create a password"
+                />
+              </div>
+
+              <button type="submit" class="btn btn-receiver">
+                Register as Food Receiver
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Login Modal -->
+    <!-- <div class="modal" id="login-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="close-btn" id="close-login-modal">&times;</button>
+            <div class="modal-header-overlay">
+                <div class="modal-welcome-text">Welcome Back to Jeevan Ahaar</div>
+                <div class="fruits-decoration">
+                    <div class="fruit" style="background-color: #ff6347;"></div>
+                    <div class="fruit" style="background-color: #ffa500;"></div>
+                    <div class="fruit" style="background-color: #32cd32;"></div>
+                    <div class="fruit" style="background-color: #8a2be2;"></div>
+                </div>
+            </div>
+        </div> -->
+
+    <!-- <div class="tab-buttons">
+            <button class="tab-btn active" data-panel="donor-login-panel">Donor Login</button>
+            <button class="tab-btn" data-panel="receiver-login-panel">Receiver Login</button>
+        </div>
+
+        <div class="login-form">
+            <div class="tab-panel active" id="donor-login-panel">
+                <form>
+                    <div class="form-group">
+                        <label for="donor-login-email">Email Address</label>
+                        <input type="email" id="donor-login-email" class="form-control" placeholder="Enter your email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="donor-login-password">Password</label>
+                        <input type="password" id="donor-login-password" class="form-control" placeholder="Enter your password">
+                    </div>
+
+                    <button type="submit" class="btn btn-donor">Login as Food Donor</button>
+                </form>
+            </div>
+
+            <div class="tab-panel" id="receiver-login-panel">
+                <form>
+                    <div class="form-group">
+                        <label for="receiver-login-email">Email Address</label>
+                        <input type="email" id="receiver-login-email" class="form-control" placeholder="Enter your email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="receiver-login-password">Password</label>
+                        <input type="password" id="receiver-login-password" class="form-control" placeholder="Enter your password">
+                    </div>
+
+                    <button type="submit" class="btn btn-receiver">Login as Food Receiver</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+    <section class="features">
+      <h2 class="section-title">Our Impact</h2>
+      <div class="features-grid">
+        <div class="feature-box">
+          <div class="feature-icon">🍲</div>
+          <h3>Fresh Meals</h3>
+          <p>
+            We've served over a million nutritious meals to individuals and
+            families facing food insecurity across India.
+          </p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">🏙️</div>
+          <h3>20+ Cities</h3>
+          <p>
+            Our network spans across more than 20 cities, bringing food support
+            to urban and rural communities.
+          </p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">👥</div>
+          <h3>Dedicated volunteers</h3>
+          <p>
+            Our dedicated team of volunteers works tirelessly to ensure food
+            reaches those who need it most.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="programs">
+      <div class="programs-container">
+        <h2 class="section-title">Our Programs</h2>
+        <div class="programs-grid">
+          <div class="program-card">
+            <div
+              class="program-image"
+              style="
+                background-image: url('../../src/assets/close-up-hands-holding-food-plates.jpg');
+              "
+            ></div>
+            <div class="program-content">
+              <h3>Feeding Through Technology</h3>
+              <p>
+                We use tech to solve hunger. Our app enables fast listings,
+                QR-based pickups, and live tracking so surplus food never goes
+                to waste..
+              </p>
+              <a href="#" class="learn-more">Learn More</a>
+            </div>
+          </div>
+          <div class="program-card">
+            <div
+              class="program-image"
+              style="
+                background-image: url('../../src/assets/showcase-daily-life-activities-some-indigenous-people.jpg');
+              "
+            ></div>
+            <div class="program-content">
+              <h3>Food Rescue</h3>
+              <p>
+                We collect surplus food from restaurants, events, and corporate
+                cafeterias, reducing food waste while feeding those in need.
+              </p>
+              <a href="#" class="learn-more">Learn More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials">
+      <h2 class="section-title">Stories of Hope</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-text">
+            "Donating surplus food through Jeevan Ahaar has been incredibly
+            fulfilling. Knowing that our extra meals are reaching families in
+            need. Instead of going to waste, it makes every contribution feel
+            meaningful."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-img"></div>
+            <div class="author-info">
+              <h4>Sunita Devi</h4>
+              <p>Delhi</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <p class="testimonial-text">
+            "The dignity with which Jeevan Ahaar serves meals makes all the
+            difference. They don't just feed people; they restore hope and
+            humanity."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-img"></div>
+            <div class="author-info">
+              <h4>Tanmoy Das</h4>
+              <p>Kolkata</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <p class="testimonial-text">
+            "Jeevan Ahaar has completely transformed how we operate. Earlier,
+            food donations were irregular and hard to manage — now, with
+            real-time alerts and verified donors, we can serve more people
+            efficiently and with confidence. This platform truly bridges the gap
+            between food waste and hunger."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-img"></div>
+            <div class="author-info">
+              <h4>Priya Sharma</h4>
+              <p>NGO Owner</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="cta-container">
+        <h2>Join Our Mission Today</h2>
+        <p>
+          Whether you want to volunteer, donate, or spread awareness, there are
+          many ways to contribute to our fight against hunger.
+        </p>
+        <div class="cta-buttons">
+          <a href="#" class="cta-white-btn" id="cta-register-button"
+            >Register Now</a
+          >
+          <a href="./mission.html" class="cta-outline-btn">Learn More</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-container">
+        <div class="footer-column">
+          <h3>Jeevan Ahaar</h3>
+          <p>
+            Working together to fight hunger and provide nutritious food to
+            those in need across India.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-icon">f</a>
+            <a href="#" class="social-icon">t</a>
+            <a href="#" class="social-icon">in</a>
+            <a href="#" class="social-icon">ig</a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./aboutus.html">About Us</a></li>
+            <li><a href="./ourprograms.html">Programs</a></li>
+            <li><a href="./gallery.html">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <footer id="contact">
+          <div class="footer-column">
+            <h3>Contact Us</h3>
+            <ul>
+              <li>123 MG Road, Kolkata</li>
+              <li>Phone: +91 XXXXX XXXXX</li>
+              <li>Email: info@jeevanahaar.org</li>
+              <li>Hours: Monday - Saturday: X:XX AM - X:XX PM<</li>
+            </ul>
+          </div>
+        </footer>
+
+        <div class="footer-column">
+          <h3>Newsletter</h3>
+          <p>
+            Subscribe to stay updated on our latest initiatives and impact
+            stories.
+          </p>
+          <form>
+            <div class="form-group">
+              <input
+                type="email"
+                class="form-control"
+                placeholder="Your email address"
+              />
+            </div>
+            <button type="submit" class="btn btn-receiver">Subscribe</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Jeevan Ahaar. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>
