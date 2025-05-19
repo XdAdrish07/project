@@ -37,6 +37,31 @@ npm start
 
 The application will be available at `http://localhost:5000`
 
+## Deployment on Vercel
+
+1. Install Vercel CLI:
+```bash
+npm install -g vercel
+```
+
+2. Login to Vercel:
+```bash
+vercel login
+```
+
+3. Deploy to Vercel:
+```bash
+vercel
+```
+
+Or deploy directly from GitHub:
+1. Push your code to GitHub
+2. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+3. Click "New Project"
+4. Import your GitHub repository
+5. Configure project settings
+6. Click "Deploy"
+
 ## Project Structure
 
 ```
