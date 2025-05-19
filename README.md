@@ -19,7 +19,7 @@ A web application for managing food donations and NGO coordination.
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/XdAdrish07/project.git
 cd jeevan-aahar-client
 ```
 
